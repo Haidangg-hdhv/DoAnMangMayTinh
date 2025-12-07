@@ -8,3 +8,23 @@ C:\Users\Hai Dang\OneDrive\Desktop\Ddofoans\client\client\obj\x86\Debug\client.c
 C:\Users\Hai Dang\OneDrive\Desktop\Ddofoans\client\client\obj\x86\Debug\client.csproj.CoreCompileInputs.cache
 C:\Users\Hai Dang\OneDrive\Desktop\Ddofoans\client\client\obj\x86\Debug\client.exe
 C:\Users\Hai Dang\OneDrive\Desktop\Ddofoans\client\client\obj\x86\Debug\client.pdb
+D:\DoAnMangMayTinh-main\client\client\bin\Debug\client.exe.config
+D:\DoAnMangMayTinh-main\client\client\bin\Debug\client.exe
+D:\DoAnMangMayTinh-main\client\client\bin\Debug\client.pdb
+D:\DoAnMangMayTinh-main\client\client\obj\x86\Debug\client.csproj.AssemblyReference.cache
+D:\DoAnMangMayTinh-main\client\client\obj\x86\Debug\client.client.resources
+D:\DoAnMangMayTinh-main\client\client\obj\x86\Debug\client.Properties.Resources.resources
+D:\DoAnMangMayTinh-main\client\client\obj\x86\Debug\client.csproj.GenerateResource.cache
+D:\DoAnMangMayTinh-main\client\client\obj\x86\Debug\client.csproj.CoreCompileInputs.cache
+D:\DoAnMangMayTinh-main\client\client\obj\x86\Debug\client.exe
+D:\DoAnMangMayTinh-main\client\client\obj\x86\Debug\client.pdb
+D:\Tai\MMT\Socket-Winform\client\client\bin\Debug\client.exe.config
+D:\Tai\MMT\Socket-Winform\client\client\bin\Debug\client.exe
+D:\Tai\MMT\Socket-Winform\client\client\bin\Debug\client.pdb
+D:\Tai\MMT\Socket-Winform\client\client\obj\x86\Debug\client.csproj.AssemblyReference.cache
+D:\Tai\MMT\Socket-Winform\client\client\obj\x86\Debug\client.client.resources
+D:\Tai\MMT\Socket-Winform\client\client\obj\x86\Debug\client.Properties.Resources.resources
+D:\Tai\MMT\Socket-Winform\client\client\obj\x86\Debug\client.csproj.GenerateResource.cache
+D:\Tai\MMT\Socket-Winform\client\client\obj\x86\Debug\client.csproj.CoreCompileInputs.cache
+D:\Tai\MMT\Socket-Winform\client\client\obj\x86\Debug\client.exe
+D:\Tai\MMT\Socket-Winform\client\client\obj\x86\Debug\client.pdb
