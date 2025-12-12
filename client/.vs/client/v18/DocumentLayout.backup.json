@@ -1,13 +1,13 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\New folder\\DoAnMangMayTinh\\client\\",
+  "WorkspaceRootPath": "C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|c:\\new folder\\doanmangmaytinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|c:\\users\\lenovo\\documents\\study_file\\m\u1EA1ng_m\u00E1y_t\u00EDnh\\projectmmt\\doanmangmaytinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
@@ -21,17 +21,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "client.cs",
-              "DocumentMoniker": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\client\\client.cs",
               "RelativeDocumentMoniker": "client\\client.cs",
-              "ToolTip": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs",
+              "ToolTip": "C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\client\\client.cs",
               "RelativeToolTip": "client\\client.cs",
-              "ViewState": "AgIAAHwAAAAAAAAAAAAgwIUAAABLAAAAAAAAAA==",
+              "ViewState": "AgIAADoAAAAAAAAAAAAgwD8AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-11T16:19:03.534Z",
               "EditorCaption": ""
@@ -40,7 +44,7 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "client.cs [Design]",
-              "DocumentMoniker": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs",
+              "DocumentMoniker": "C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\client\\client.cs",
               "RelativeDocumentMoniker": "client\\client.cs",
               "ToolTip": "D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -51,9 +55,9 @@
               "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\..\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
               "ToolTip": "C:\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
-              "RelativeToolTip": "..\\..\\..\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\..\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-11T03:12:51.303Z"
             }

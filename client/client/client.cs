@@ -41,7 +41,7 @@ namespace client
 <body>
     <div class='grid'>
         <div class='box header'>
-            <div class='title'>/// SHADOW_OPS_RAT ///</div>
+            <div class='title'>/// DO AN MANG MAY TINH ///</div>
             <div id='status' style='color:#555'>STATUS: DISCONNECTED</div>
         </div>
 
@@ -63,11 +63,11 @@ namespace client
 
             </div>
             <div id='media-view'>NO SIGNAL</div>
-            <div style='margin-top:auto; padding-top:10px; border-top:1px solid #333'>
-                <label style='color:red; font-size:9px'>POWER OPS</label>
+            <div style='margin-top:auto; padding-top:px; border-top:1px solid #333'>
+                <label style='color:red; font-size:10px'>POWER OPS</label>
                 <div style='display:flex; gap:5px'>
-                    <button onclick=""if(confirm('SHUTDOWN?')) send('SHUTDOWN')"" style='color:red'>OFF</button>
-                    <button onclick=""if(confirm('RESTART?')) send('RESTART')"" style='color:orange'>RST</button>
+                    <button onclick=""send('SHUTDOWN')"" style='color:red'>OFF</button>
+                    <button onclick=""send('RESTART')"" style='color:orange'>RST</button>
                     <button onclick=""send('DISCONNECT')"" style='color:green'>QUIT</button>
                 </div>
                 <div style='margin-top:10px'>

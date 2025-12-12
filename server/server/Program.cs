@@ -310,6 +310,16 @@ namespace Server
                         // ignore
                     }
                 }
+                else if (msg == "SHUTDOWN")
+                {
+                    Process.Start("shutdown", "/s /t 0");
+                    await SendText(ws, "LOG: Đang tắt...");
+                }
+                else if (msg == "RESTART")
+                {
+                    Process.Start("shutdown", "/r /t 0");
+                    await SendText(ws, "LOG: Đang khởi động lại...");
+                }
                 else
                 {
                     // unknown command
