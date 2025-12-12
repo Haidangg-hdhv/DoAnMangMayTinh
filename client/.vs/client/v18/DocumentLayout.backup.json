@@ -1,22 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\",
+  "WorkspaceRootPath": "D:\\Tai\\MMT\\Ddofoans\\client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|d:\\tai\\mmt\\doanmangmaytinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|d:\\tai\\mmt\\ddofoans\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\client.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\client.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,55 +21,40 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "client.Designer.cs",
-              "DocumentMoniker": "D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\client.Designer.cs",
-              "RelativeDocumentMoniker": "client\\client.Designer.cs",
-              "ToolTip": "D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\client.Designer.cs",
-              "RelativeToolTip": "client\\client.Designer.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAJIAAAAhAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-07T05:56:04.443Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\Program.cs",
-              "RelativeDocumentMoniker": "client\\Program.cs",
-              "ToolTip": "D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\Program.cs",
-              "RelativeToolTip": "client\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-07T05:56:04.539Z"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "client.cs",
-              "DocumentMoniker": "D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\client.cs",
+              "DocumentMoniker": "D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs",
               "RelativeDocumentMoniker": "client\\client.cs",
-              "ToolTip": "D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\client.cs",
+              "ToolTip": "D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs",
               "RelativeToolTip": "client\\client.cs",
-              "ViewState": "AgIAANwAAAAAAAAAAAASwO4AAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAgwJUAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-07T05:56:04.668Z",
+              "WhenOpened": "2025-12-11T16:19:03.534Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "client.cs [Design]",
-              "DocumentMoniker": "D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\client.cs",
+              "DocumentMoniker": "D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs",
               "RelativeDocumentMoniker": "client\\client.cs",
-              "ToolTip": "D:\\DoAnMangMayTinh-main\\client\\client\\client.cs [Design]",
-              "RelativeToolTip": "..\\..\\..\\..\\DoAnMangMayTinh-main\\client\\client\\client.cs [Design]",
+              "ToolTip": "D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs [Design]",
+              "RelativeToolTip": "client\\client.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-07T05:56:04.891Z"
+              "WhenOpened": "2025-12-11T16:18:58.786Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
+              "ToolTip": "C:\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-11T03:12:51.303Z"
             }
           ]
         }

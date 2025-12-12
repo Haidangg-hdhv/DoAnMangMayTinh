@@ -1,0 +1,19 @@
+# Bỏ qua thư mục tạm của Visual Studio
+.vs/
+Debug/
+Release/
+x64/
+x86/
+[Oo]bj/
+[Bb]in/
+
+# Bỏ qua file cấu hình người dùng (của riêng máy bạn)
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Bỏ qua file rác hệ thống (cái file ._client trong hình của bạn khả năng là file rác từ Mac)
+._*
+.DS_Store
+Thumbs.db

