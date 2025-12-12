@@ -1,13 +1,13 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Tai\\MMT\\Ddofoans\\client\\",
+  "WorkspaceRootPath": "C:\\New folder\\DoAnMangMayTinh\\client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|d:\\tai\\mmt\\ddofoans\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|c:\\new folder\\doanmangmaytinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
@@ -27,9 +27,9 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "client.cs",
-              "DocumentMoniker": "D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs",
+              "DocumentMoniker": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs",
               "RelativeDocumentMoniker": "client\\client.cs",
-              "ToolTip": "D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs",
+              "ToolTip": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs",
               "RelativeToolTip": "client\\client.cs",
               "ViewState": "AgIAAHwAAAAAAAAAAAAgwIUAAABLAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -40,10 +40,9 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "client.cs [Design]",
-              "DocumentMoniker": "D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs",
+              "DocumentMoniker": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs",
               "RelativeDocumentMoniker": "client\\client.cs",
               "ToolTip": "D:\\Tai\\MMT\\Ddofoans\\client\\client\\client.cs [Design]",
-              "RelativeToolTip": "client\\client.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-11T16:18:58.786Z"
             },
@@ -52,7 +51,9 @@
               "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
               "ToolTip": "C:\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
+              "RelativeToolTip": "..\\..\\..\\Users\\Hai Dang\\OneDrive\\Desktop\\Ddofoans\\server\\server\\Program.cs",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-11T03:12:51.303Z"
             }

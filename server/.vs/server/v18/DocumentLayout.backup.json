@@ -1,13 +1,13 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Tai\\MMT\\Ddofoans\\server\\",
+  "WorkspaceRootPath": "C:\\New folder\\DoAnMangMayTinh\\server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{55A463FB-E195-411E-89E3-8A46B5272FF7}|server\\server.csproj|d:\\tai\\mmt\\ddofoans\\server\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{55A463FB-E195-411E-89E3-8A46B5272FF7}|server\\server.csproj|c:\\new folder\\doanmangmaytinh\\server\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55A463FB-E195-411E-89E3-8A46B5272FF7}|server\\server.csproj|solutionrelative:server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55A463FB-E195-411E-89E3-8A46B5272FF7}|server\\server.csproj|D:\\Tai\\MMT\\Ddofoans\\server\\server\\keylog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{55A463FB-E195-411E-89E3-8A46B5272FF7}|server\\server.csproj|C:\\New folder\\DoAnMangMayTinh\\server\\server\\keylog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55A463FB-E195-411E-89E3-8A46B5272FF7}|server\\server.csproj|solutionrelative:server\\keylog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -24,9 +24,9 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Keylog.cs",
-              "DocumentMoniker": "D:\\Tai\\MMT\\Ddofoans\\server\\server\\Keylog.cs",
+              "DocumentMoniker": "C:\\New folder\\DoAnMangMayTinh\\server\\server\\Keylog.cs",
               "RelativeDocumentMoniker": "server\\Keylog.cs",
-              "ToolTip": "D:\\Tai\\MMT\\Ddofoans\\server\\server\\Keylog.cs",
+              "ToolTip": "C:\\New folder\\DoAnMangMayTinh\\server\\server\\Keylog.cs",
               "RelativeToolTip": "server\\Keylog.cs",
               "ViewState": "AgIAADQAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -36,11 +36,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Tai\\MMT\\Ddofoans\\server\\server\\Program.cs",
+              "DocumentMoniker": "C:\\New folder\\DoAnMangMayTinh\\server\\server\\Program.cs",
               "RelativeDocumentMoniker": "server\\Program.cs",
-              "ToolTip": "D:\\Tai\\MMT\\Ddofoans\\server\\server\\Program.cs",
+              "ToolTip": "C:\\New folder\\DoAnMangMayTinh\\server\\server\\Program.cs",
               "RelativeToolTip": "server\\Program.cs",
-              "ViewState": "AgIAALcAAAAAAAAAAAAiwMkAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAADICAAAAAAAAAAAiwEICAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-11T03:19:53.022Z",
               "EditorCaption": ""

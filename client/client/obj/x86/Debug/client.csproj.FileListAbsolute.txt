@@ -18,3 +18,13 @@ D:\Tai\MMT\Ddofoans\client\client\obj\x86\Debug\client.csproj.GenerateResource.c
 D:\Tai\MMT\Ddofoans\client\client\obj\x86\Debug\client.csproj.CoreCompileInputs.cache
 D:\Tai\MMT\Ddofoans\client\client\obj\x86\Debug\client.exe
 D:\Tai\MMT\Ddofoans\client\client\obj\x86\Debug\client.pdb
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\client.exe.config
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\client.exe
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\client.pdb
+C:\New folder\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.AssemblyReference.cache
+C:\New folder\DoAnMangMayTinh\client\client\obj\x86\Debug\client.client.resources
+C:\New folder\DoAnMangMayTinh\client\client\obj\x86\Debug\client.Properties.Resources.resources
+C:\New folder\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.GenerateResource.cache
+C:\New folder\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.CoreCompileInputs.cache
+C:\New folder\DoAnMangMayTinh\client\client\obj\x86\Debug\client.exe
+C:\New folder\DoAnMangMayTinh\client\client\obj\x86\Debug\client.pdb

