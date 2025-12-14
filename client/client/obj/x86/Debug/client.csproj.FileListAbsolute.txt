@@ -38,3 +38,13 @@ C:\Users\LENOVO\Documents\study_file\Mạng_máy_tính\ProjectMMT\DoAnMangMayTin
 C:\Users\LENOVO\Documents\study_file\Mạng_máy_tính\ProjectMMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.CoreCompileInputs.cache
 C:\Users\LENOVO\Documents\study_file\Mạng_máy_tính\ProjectMMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.exe
 C:\Users\LENOVO\Documents\study_file\Mạng_máy_tính\ProjectMMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.pdb
+D:\Tai\MMT\DoAnMangMayTinh\client\client\bin\Debug\client.exe.config
+D:\Tai\MMT\DoAnMangMayTinh\client\client\bin\Debug\client.exe
+D:\Tai\MMT\DoAnMangMayTinh\client\client\bin\Debug\client.pdb
+D:\Tai\MMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.AssemblyReference.cache
+D:\Tai\MMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.client.resources
+D:\Tai\MMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.Properties.Resources.resources
+D:\Tai\MMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.GenerateResource.cache
+D:\Tai\MMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.CoreCompileInputs.cache
+D:\Tai\MMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.exe
+D:\Tai\MMT\DoAnMangMayTinh\client\client\obj\x86\Debug\client.pdb
