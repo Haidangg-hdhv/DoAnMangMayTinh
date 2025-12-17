@@ -331,6 +331,27 @@ namespace Server
                     await SendText(ws, "SYS|STREAM_SCREEN");
                 }
 
+                else if(msg.StartsWith("MSG|"))
+                {
+                    string content = msg.Substring(4);
+                    // Luu message ra file txt
+                    string path = SaveMessageToTxt(content);
+                    // nho OS mo file (Notepad)
+                    OpenFileWithOS(path);
+
+                    await SendText(ws, "SYS|MESSAGE_SENT");
+                }
+
+                else if (msg.StartsWith("HTML|"))
+                {
+                    string base64 = msg.Substring(5);
+
+                    string savePath = SaveHtmlFile(base64);
+                    // nho Ó mo file!
+                    OpenFileWithOS(savePath);
+
+                    await SendText(ws, "SYS|HTML_SENT");
+                }
 
                 else
                 {
@@ -625,6 +646,69 @@ namespace Server
                     return ms.ToArray();
                 }
             }
+        }
+
+
+        static string SaveHtmlFile(string base64)
+        {
+            byte[] data = Convert.FromBase64String(base64);
+
+            string dir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                "ReceivedHTML"
+            );
+
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            string path = Path.Combine(
+                dir,
+                $"christmas_{DateTime.Now:yyyyMMdd_HHmmss}.html"
+            );
+
+            File.WriteAllBytes(path, data);
+
+            return path;
+        }
+
+        static void OpenFileWithOS(string filePath)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = filePath,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Open file error: " + ex.Message);
+            }
+        }
+
+        static string SaveMessageToTxt(string content)
+        {
+            string dir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                "ReceivedMessages"
+            );
+
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            string path = Path.Combine(
+                dir,
+                $"message_{DateTime.Now:yyyyMMdd_HHmmss}.txt"
+            );
+
+            File.WriteAllText(
+                path,
+                $"[{DateTime.Now:HH:mm:ss}]{Environment.NewLine}{content}",
+                Encoding.UTF8
+            );
+
+            return path;
         }
 
 

