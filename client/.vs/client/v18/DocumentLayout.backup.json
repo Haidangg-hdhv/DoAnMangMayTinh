@@ -1,14 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\",
+  "WorkspaceRootPath": "C:\\New folder\\DoAnMangMayTinh\\client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|c:\\users\\lenovo\\documents\\study_file\\m\u1EA1ng_m\u00E1y_t\u00EDnh\\projectmmt\\doanmangmaytinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|c:\\new folder\\doanmangmaytinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{5C3F2682-E378-43C6-81C4-88FD55199074}|client\\client.csproj|solutionrelative:client\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|client||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +21,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -26,13 +29,24 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "client",
+              "DocumentMoniker": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.csproj",
+              "RelativeDocumentMoniker": "client\\client.csproj",
+              "ToolTip": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.csproj",
+              "RelativeToolTip": "client\\client.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-12-17T15:59:02.742Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "client.cs",
-              "DocumentMoniker": "C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\client\\client.cs",
+              "DocumentMoniker": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs",
               "RelativeDocumentMoniker": "client\\client.cs",
-              "ToolTip": "C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\client\\client.cs",
+              "ToolTip": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs",
               "RelativeToolTip": "client\\client.cs",
-              "ViewState": "AgIAAIEBAAAAAAAAAAAiwIQBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAP0AAAAAAAAAAAAkwBIBAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-11T16:19:03.534Z",
               "EditorCaption": ""
@@ -41,10 +55,9 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "client.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\client\\client.cs",
+              "DocumentMoniker": "C:\\New folder\\DoAnMangMayTinh\\client\\client\\client.cs",
               "RelativeDocumentMoniker": "client\\client.cs",
-              "ToolTip": "C:\\Users\\LENOVO\\Documents\\study_file\\M\u1EA1ng_m\u00E1y_t\u00EDnh\\ProjectMMT\\DoAnMangMayTinh\\client\\client\\client.cs [Design]",
-              "RelativeToolTip": "client\\client.cs [Design]",
+              "ToolTip": "D:\\Tai\\MMT\\DoAnMangMayTinh\\client\\client\\client.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-11T16:18:58.786Z"
             }

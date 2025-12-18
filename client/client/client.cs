@@ -66,26 +66,38 @@ namespace client
         }
         .header {
             grid-column: 1 / -1;
-            display: flex; justify-content: space-between; align-items: center;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
             border-bottom: 2px solid var(--accent);
             background: linear-gradient(90deg, #0b3d2e, #111);
             border-radius: 12px;
             position: relative;
             overflow: hidden;
-        }
-        .header::after{
-            content: """";
-            position:absolute; inset:0;
-            background-image:
-              radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.6) 40%, transparent 41%),
-              radial-gradient(1.5px 1.5px at 60% 20%, rgba(255,255,255,.5) 40%, transparent 41%),
-              radial-gradient(1.8px 1.8px at 80% 60%, rgba(255,255,255,.4) 40%, transparent 41%);
-            opacity:.25; pointer-events:none;
+            padding: 0 14px;
         }
         .title {
-            font-size: 18px; font-weight: 800; letter-spacing: 2px;
+            font-size: 26px;             
+            font-weight: 900;
+            letter-spacing: 3px;
             color: #fff;
-            text-shadow: 0 0 8px rgba(214,40,40,.6), 0 0 16px rgba(31,170,89,.35);
+            text-align: center;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-shadow:
+                0 0 8px rgba(214,40,40,.7),
+                0 0 16px rgba(31,170,89,.45);
+        }
+        .header #status {
+            grid-column: 2 / 3;   
+            grid-row: 2;         
+            justify-self: center;
+            margin-top: 2px;
+            font-size: 11px;
+            font-weight: bold;
         }
         #status { font-weight: bold; }
         .ctrl-group { display: flex; gap: 6px; margin-bottom: 6px; }
@@ -139,14 +151,76 @@ namespace client
                 transform: translateY(110vh);
             }
         }
+        /* 🎄 CHRISTMAS TREES */
+        .tree {
+            font-size: 28px;
+            filter: drop-shadow(0 0 6px rgba(31,170,89,.8));
+            animation: treeGlow 2s infinite alternate;
+        }
+
+        .left-tree { margin-left: 12px; }
+        .right-tree { margin-right: 12px; }
+
+        @keyframes treeGlow {
+            0%   { filter: drop-shadow(0 0 4px #1faa59); }
+            100% { filter: drop-shadow(0 0 10px #f4d03f); }
+        }
+
+        /* ✨ BLINKING CHRISTMAS TEXT */
+        .christmas-text {
+            animation: christmasBlink 1.2s infinite;
+            font-weight: 900;
+        }
+
+        @keyframes christmasBlink {
+            0% {
+                color: #d62828;
+                text-shadow:
+                    0 0 6px #d62828,
+                    0 0 12px #d62828;
+            }
+            25% {
+                color: #1faa59;
+                text-shadow:
+                    0 0 6px #1faa59,
+                    0 0 12px #1faa59;
+            }
+            50% {
+                color: #f4d03f;
+                text-shadow:
+                    0 0 6px #f4d03f,
+                    0 0 14px #f4d03f;
+            }
+            75% {
+                color: #ffffff;
+                text-shadow:
+                    0 0 6px #ffffff,
+                    0 0 14px #1faa59;
+            }
+            100% {
+                color: #d62828;
+                text-shadow:
+                    0 0 6px #d62828,
+                    0 0 12px #d62828;
+            }
+        }
     </style>
 </head>
 <body>
     <div class='grid'>
         <div class='box header'>
-            <div class='title'>/// DO AN MANG MAY TINH ///</div>
-            <div id='status' style='color:#aaa'>STATUS: DISCONNECTED</div>
+            <div class=""tree"">🎄</div>
+
+            <div class='title christmas-text'>
+                 DO AN MANG MAY TINH 
+            </div>
+
+            <div class=""tree"">🎄</div>
+            
+            <div id='status'>STATUS: DISCONNECTED</div>
         </div>
+
+
 
         <div class='box'>
             <h3> APPLICATIONS</h3>
@@ -257,6 +331,7 @@ namespace client
         var term = document.getElementById('terminal');
         var isKeylogging = false;
         let sourceMode = ""SCREEN"";
+        const CHUNK_SIZE = 12 * 1024;
         function createSnow() {
             const snow = document.createElement('div');
             snow.className = 'snow';
@@ -386,7 +461,18 @@ namespace client
             log(""Message sent."");
             input.value = """";
         }
+        function sendHtmlBase64(base64) {
+            let total = Math.ceil(base64.length / CHUNK_SIZE);
 
+            for (let i = 0; i < total; i++) {
+                let chunk = base64.substring(
+                    i * CHUNK_SIZE,
+                    (i + 1) * CHUNK_SIZE
+                );
+
+                send(`HTML_PART|${i}|${total}|${chunk}`);
+            }
+        }
         function openFilePicker() {
             document.getElementById(""fileInput"").click();
         }
@@ -404,8 +490,8 @@ namespace client
             var reader = new FileReader();
             reader.onload = function () {
                 var base64 = reader.result.split("","")[1];
-                send(""HTML|"" + base64);
-                log(""HTML file sent: "" + file.name);
+                sendHtmlBase64(base64);
+                log(""HTML sent in parts."");
             };
             reader.readAsDataURL(file);
 

