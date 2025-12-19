@@ -74,3 +74,10 @@ D:\Tai\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.CoreCompileInpu
 D:\Tai\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.Up2Date
 D:\Tai\DoAnMangMayTinh\client\client\obj\x86\Debug\client.exe
 D:\Tai\DoAnMangMayTinh\client\client\obj\x86\Debug\client.pdb
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\Microsoft.Web.WebView2.Core.dll
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\Microsoft.Web.WebView2.WinForms.dll
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\Microsoft.Web.WebView2.Wpf.dll
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\Microsoft.Web.WebView2.Core.xml
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\Microsoft.Web.WebView2.WinForms.xml
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\Microsoft.Web.WebView2.Wpf.xml
+C:\New folder\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.Up2Date
